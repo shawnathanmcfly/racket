@@ -147,76 +147,86 @@ int cast_rays( ){
 void main_loop(){
 
 	SDL_Event e;
-	//Handle events on queue
-	while( SDL_PollEvent( &e ) != 0 )
-		;
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 )
+			;
 
-	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
-	if( currentKeyStates[ SDL_SCANCODE_Q ] )
-	{
-		quit = 1;
+		const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
+		if( currentKeyStates[ SDL_SCANCODE_Q ] )
+		{
+			quit = 1;
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+		{
+			rot += 1 * (6 * 3.14 / 180 );
+			if( rot > 6.28 ) 
+				rot = 0;
+			//printf( "DIR: %f\n", rot );
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+		{
+			rot += -1 * (6 * 3.14 / 180 );
+			if( rot < 0 ) 
+				rot = 6.28;
+			//printf( "DIR: %f\n", rot );
+			
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_UP ] )
+		{
+			player_x += cos( rot) * 2;
+			player_y += sin( rot) * 2;
+			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+		{
+			player_x += cos( rot) * -2;
+			player_y += sin( rot) * -2;
+			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
+			
+		}
+
+		/* Clear Screen */
+		SDL_Rect clear;
+		clear.x = 0;
+		clear.y = 0;
+		clear.w = 640;
+		clear.h = 480;
+		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+		SDL_RenderFillRect( renderer, &clear );
 		
-	}
-	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
-	{
-		rot += 1 * (6 * 3.14 / 180 );
-		//printf( "DIR: %f\n", rot );
-		SDL_Delay( 20 );
-	}
-	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
-	{
-		rot += -1 * (6 * 3.14 / 180 );
-		//printf( "DIR: %f\n", rot );
-		SDL_Delay( 20 );
-	}
-	if( currentKeyStates[ SDL_SCANCODE_UP ] )
-	{
-		player_x += cos( rot) * -2;
-		player_y += sin( rot) * -2;
-		SDL_Delay( 20 );
-	}
-	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-	{
-		player_x += cos( rot) * 2;
-		player_y += sin( rot) * 2;
-		SDL_Delay( 20 );
-	}
+		//player pos
+		SDL_Rect p_pos;
+		p_pos.x = player_x;
+		p_pos.y = player_y;
+		p_pos.w = 2;
+		p_pos.h = 2;
+		SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
+		SDL_RenderDrawRect( renderer, &p_pos );
 
-	/* Clear Screen */
-	SDL_Rect clear;
-	clear.x = 0;
-	clear.y = 0;
-	clear.w = 640;
-	clear.h = 480;
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-	SDL_RenderFillRect( renderer, &clear );
+		//level grid 
+		SDL_Rect r_scr;
+		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0x00, 0xff);
+		r_scr.w = 64;
+		r_scr.h = 64;
+		/*for( r_scr.y = 0; r_scr.y < 10 * 64; r_scr.y += 64 )
+			for( r_scr.x = 0; r_scr.x < 10 * 64; r_scr.x += 64 )
+				if( level[ r_scr.y / 64][r_scr.x / 64])
+					SDL_RenderDrawRect( renderer, &r_scr );*/
+
+		
+		SDL_SetRenderDrawColor(renderer, 0x00, 0xff, 0x00, 0xff);
+		SDL_RenderDrawLine(renderer, player_x, player_y, player_x + cos( rot ) * 10, player_y + sin( rot ) * 10);
 	
-	//player pos
-	SDL_Rect p_pos;
-	p_pos.x = player_x;
-	p_pos.y = player_y;
-	p_pos.w = 2;
-	p_pos.h = 2;
-	SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
-	SDL_RenderDrawRect( renderer, &p_pos );
 
-	/* level grid */
-	SDL_Rect r_scr;
-	SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0x00, 0xff);
-	r_scr.w = 64;
-	r_scr.h = 64;
-	for( r_scr.y = 0; r_scr.y < 10 * 64; r_scr.y += 64 )
-		for( r_scr.x = 0; r_scr.x < 10 * 64; r_scr.x += 64 )
-			if( level[ r_scr.y / 64][r_scr.x / 64])
-				SDL_RenderDrawRect( renderer, &r_scr );
+		cast_rays( );
+	
 
-
-
-	cast_rays();
-
-
-
-	SDL_RenderPresent( renderer );
+		SDL_RenderPresent( renderer );
+	
 	
 	
 }
