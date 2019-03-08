@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
 
-#define PI  3.14159265358979323846264338327950288
+#define PI   3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
 
 SDL_Window *window = 0;
@@ -11,13 +11,13 @@ SDL_Renderer *renderer = 0;
 SDL_Surface *back = 0;
 
 unsigned short quit = 0;
-double player_dir = -1, player_x = 300, player_y = 300, rot = 0;
+double player_dir = -1, player_x = 300, player_y = 300, rot = 0.12;
 
-int map_width = CUBE_SIZE * 19, map_height = CUBE_SIZE * 18;
+int map_width = CUBE_SIZE * 18, map_height = CUBE_SIZE * 19;
 unsigned char level[19][18] = {
 
-	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 },
+	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
@@ -30,10 +30,10 @@ unsigned char level[19][18] = {
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
 	
 };
@@ -45,6 +45,9 @@ double cast_ray( double offset ){
 
 	if( offset < 0 )
 		offset += 2 * 3.14;
+
+
+	//printf("OFFSET: %f\n", offset );
 
 	//horizontal check
 	int step_y, step_x, y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start, h_check, v_check;
@@ -59,25 +62,21 @@ double cast_ray( double offset ){
 	}
 
 	x_start = player_x - (player_y-y_start)/tan(offset);
-
-	//SDL_Rect h;
-	//h.x = x_start;
-	//h.y = y_start;
-	//h.w = 2;
-	//h.h = 2;
-	SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
-
+		
+	if( x_start > 0 && x_start < map_width )
+		
+		hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 	while( x_start > 0 && x_start < map_width &&
 			y_start > 0 && y_start < map_height &&
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
-		/*SDL_RenderDrawRect( renderer, &h );*/
-		v_check++;
+		
 		x_start -= step_x;
 		y_start += step_y;
-		hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
-		/*h.x = x_start;
-		h.y = y_start;*/
+
+		if( x_start > 0 && x_start < map_width )
+			hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+		
 	}
 
 	
@@ -89,54 +88,47 @@ double cast_ray( double offset ){
 		step_x = CUBE_SIZE;
 		step_y = -(CUBE_SIZE * tan(offset));
 		x_start -= 1;
+		
 	}else{
 		step_x = -CUBE_SIZE;
 		step_y = CUBE_SIZE * tan(offset);
 		x_start += CUBE_SIZE;
+
 	}
 
+	
 	y_start = player_y - (player_x-x_start)*tan(offset);
 
-	//h.x = x_start;
-	//h.y = y_start;
-	//h.w = 2;
-	//h.h = 2;
-	SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
-
-	while( x_start > 0 && x_start < map_width &&
-			y_start > 0 && y_start < map_height &&
+	if( y_start > 0 && y_start < map_height && 
+		x_start > 0 && x_start < map_width  )
+		vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+	
+	while( y_start > 0 && y_start < map_height &&
 	
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
-		//SDL_RenderDrawRect( renderer, &h );
+		
 		x_start -= step_x;
 		y_start += step_y;
-		h_check++;
-		vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
-		//h.x = x_start;
-		//h.y = y_start;
+
+		if( y_start > 0 && y_start < map_height )
+			vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+
 	}
 
 	vl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
 
 	if( vl < hl ){
-		SDL_SetRenderDrawColor(renderer, 6000 / vl, 6000 / vl, 6000 / vl, 0xff);
+		if( vc == 1 ){ r = 4000 / vl; g = 4000 / vl; b = 4000 / vl; } else { r = 4000 / vl; }
+		SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
 		vl *= cos( (offset - rot) + PI / 1080 );
 		return vl;
 	}else{
-		
-		SDL_SetRenderDrawColor(renderer, 6000 / hl, 6000 / hl, 6000 / hl, 0xff);
+		if( hc == 1 ){ r = 4000 / hl; g = 4000 / hl; b = 4000 / hl; } else { r = 4000 / hl; }
+		SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
 		hl *= cos( (offset - rot) - PI / 1080 );
 		return hl;
 	}
-	/*if( vl < hl )
-		SDL_RenderDrawLine(renderer, player_x, player_y, x_start, y_start);
-	else
-	{
-		SDL_RenderDrawLine(renderer, player_x, player_y, hx, hy);
-	}*/
-	
-	//printf( "VERTICAL: %d - HORIZONTAL: %d\n", vl, hl );
 }
 
 int cast_rays( ){
@@ -153,7 +145,6 @@ int cast_rays( ){
 		cur_slice.x = slice;
 		cur_slice.h = 200 / floor( dist ) * 277;
 		cur_slice.y = 240 - cur_slice.h / 2;
-		//SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 		SDL_RenderFillRect(renderer, &cur_slice );
 	}
 
@@ -166,7 +157,6 @@ int cast_rays( ){
 		cur_slice.x = slice;
 		cur_slice.h = CUBE_SIZE / floor( dist ) * 277;
 		cur_slice.y = 240 - cur_slice.h / 2;
-		//SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 		SDL_RenderFillRect(renderer, &cur_slice );
 	}
 }
@@ -174,88 +164,52 @@ int cast_rays( ){
 void main_loop(){
 
 	SDL_Event e;
-		//Handle events on queue
-		while( SDL_PollEvent( &e ) != 0 )
-			;
+	//Handle events on queue
+	while( SDL_PollEvent( &e ) != 0 )
+		;
 
-		const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
-		if( currentKeyStates[ SDL_SCANCODE_Q ] )
-		{
-			quit = 1;
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
-		{
-			rot += 1 * (4 * 3.14 / 180 );
-			if( rot > 6.28 ) 
-				rot = 0;
-			//printf( "DIR: %f\n", rot );
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
-		{
-			rot += -1 * (4 * 3.14 / 180 );
-			if( rot < 0 ) 
-				rot = 6.28;
-			//printf( "DIR: %f\n", rot );
-			
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_UP ] )
-		{
-			player_x += cos( rot) * 6;
-			player_y += sin( rot) * 6;
-			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-		{
-			player_x += cos( rot) * -2;
-			player_y += sin( rot) * -2;
-			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
-			
-		}
-
-		/* Clear Screen */
-		SDL_Rect clear;
-		clear.x = 0;
-		clear.y = 0;
-		clear.w = 640;
-		clear.h = 480;
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-		SDL_RenderFillRect( renderer, &clear );
+	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
+	if( currentKeyStates[ SDL_SCANCODE_Q ] )
+	{
+		quit = 1;
 		
-		//player pos
-		SDL_Rect p_pos;
-		p_pos.x = player_x;
-		p_pos.y = player_y;
-		p_pos.w = 2;
-		p_pos.h = 2;
-		SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
-		SDL_RenderDrawRect( renderer, &p_pos );
-
-		//level grid 
-		SDL_Rect r_scr;
-		SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0x00, 0xff);
-		r_scr.w = 64;
-		r_scr.h = 64;
-		/*for( r_scr.y = 0; r_scr.y < 10 * 64; r_scr.y += 64 )
-			for( r_scr.x = 0; r_scr.x < 10 * 64; r_scr.x += 64 )
-				if( level[ r_scr.y / 64][r_scr.x / 64])
-					SDL_RenderDrawRect( renderer, &r_scr );*/
-
+	}
+	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+	{
+		rot += 1 * (4 * 3.14 / 180 );
+		if( rot > 6.28 ) 
+			rot = 0;
 		
-		SDL_SetRenderDrawColor(renderer, 0x00, 0xff, 0x00, 0xff);
-		SDL_RenderDrawLine(renderer, player_x, player_y, player_x + cos( rot ) * 10, player_y + sin( rot ) * 10);
-	
+	}
+	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+	{
+		rot += -1 * (4 * 3.14 / 180 );
+		if( rot < 0 ) 
+			rot = 6.28;
+	}
+	if( currentKeyStates[ SDL_SCANCODE_UP ] )
+	{
+		player_x += cos( rot) * 10;
+		player_y += sin( rot) * 10;
+	}
+	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+	{
+		player_x += cos( rot) * -10;
+		player_y += sin( rot) * -10;
+	}
 
-		cast_rays( );
-	
+	/* Clear Screen */
+	SDL_Rect clear;
+	clear.x = 0;
+	clear.y = 0;
+	clear.w = 640;
+	clear.h = 480;
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+	SDL_RenderFillRect( renderer, &clear );
 
-		SDL_RenderPresent( renderer );
-	
-	
-	
+	cast_rays();
+
+	SDL_RenderPresent( renderer );
 }
 
 int main( int argc, char *argv[] ){
@@ -268,8 +222,6 @@ int main( int argc, char *argv[] ){
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
-
-	
 
 	if( renderer && window ){
 		printf("Video Initialized!\n");

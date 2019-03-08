@@ -11,4 +11,4 @@
 
 gcc test.c -IC:\ming_dev\include\SDL2 -LC:\ming_dev\lib -w -Wl,-subsystem,windows -lmingw32 -lSDL2main -lSDL2 -o racket
 all:
-	emcc -O3 -s USE_SDL=2 -s WASM=1 -s -s "BINARYEN_TRAP_MODE="clamp" ASSERTIONS=1 racket.c
+	emcc racket.c -O3 -s USE_SDL=2 -s WASM=1 -s BINARYEN_TRAP_MODE="clamp"
