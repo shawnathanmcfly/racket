@@ -8,7 +8,8 @@
 
 SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
-SDL_Surface *back = 0;
+
+SDL_Texture *brick = 0, *ivy = 0;
 
 unsigned short quit = 0;
 double player_dir = -1, player_x = 300, player_y = 300, rot = 0.12;
@@ -38,7 +39,29 @@ unsigned char level[19][18] = {
 	
 };
 
-double cast_ray( double offset ){
+SDL_Texture *load_texture( char *path ){
+
+	SDL_Surface *temp_surf;
+	SDL_Texture *texture;
+
+	printf( "ERROR: %s\n", path);
+
+	temp_surf = SDL_LoadBMP( path );
+
+	if( temp_surf == 0)
+		printf( "ERROR: %s\n", SDL_GetError());
+
+	texture = SDL_CreateTextureFromSurface(renderer, temp_surf);
+
+	if( texture == 0)
+		printf( "ERROR: %s\n", SDL_GetError());
+
+	SDL_FreeSurface( temp_surf) ;
+
+	return texture;
+}
+
+double cast_ray( double offset, int col_pos ){
 
 	if( offset > 2 * 3.14 )
 		offset -= 2 * 3.14;
@@ -50,7 +73,10 @@ double cast_ray( double offset ){
 	//printf("OFFSET: %f\n", offset );
 
 	//horizontal check
-	int step_y, step_x, y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start, h_check, v_check;
+	SDL_Rect src;
+	SDL_Rect dest;
+	
+	int step_y, step_x, y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start, vh, hh;
 	double hl, vl, r = 0, g = 0, b = 0, hc, vc;
 	if( offset > 3.14 ){
 		step_y = -CUBE_SIZE;
@@ -63,9 +89,11 @@ double cast_ray( double offset ){
 
 	x_start = player_x - (player_y-y_start)/tan(offset);
 		
-	if( x_start > 0 && x_start < map_width )
+	if( x_start > 0 && x_start < map_width ){
 		
 		hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+		hh = x_start % CUBE_SIZE;
+	}
 	while( x_start > 0 && x_start < map_width &&
 			y_start > 0 && y_start < map_height &&
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
@@ -74,8 +102,10 @@ double cast_ray( double offset ){
 		x_start -= step_x;
 		y_start += step_y;
 
-		if( x_start > 0 && x_start < map_width )
+		if( x_start > 0 && x_start < map_width ){
 			hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+			hh = x_start % CUBE_SIZE;
+		}
 		
 	}
 
@@ -87,21 +117,21 @@ double cast_ray( double offset ){
 	if( offset < 4.71 && offset > 1.57 ){
 		step_x = CUBE_SIZE;
 		step_y = -(CUBE_SIZE * tan(offset));
-		x_start -= 1;
-		
+		x_start -= 1;	
 	}else{
 		step_x = -CUBE_SIZE;
 		step_y = CUBE_SIZE * tan(offset);
 		x_start += CUBE_SIZE;
-
 	}
 
 	
 	y_start = player_y - (player_x-x_start)*tan(offset);
 
 	if( y_start > 0 && y_start < map_height && 
-		x_start > 0 && x_start < map_width  )
+		x_start > 0 && x_start < map_width  ){
 		vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+		vh = y_start % CUBE_SIZE;
+	}
 	
 	while( y_start > 0 && y_start < map_height &&
 	
@@ -111,22 +141,50 @@ double cast_ray( double offset ){
 		x_start -= step_x;
 		y_start += step_y;
 
-		if( y_start > 0 && y_start < map_height )
+		if( y_start > 0 && y_start < map_height ){
 			vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
+			vh = y_start % CUBE_SIZE;
+		}
 
 	}
 
+	
 	vl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
 
+	dest.x = col_pos;
+	dest.w = 2;
+	src.w = 2;
+	src.h = CUBE_SIZE;
 	if( vl < hl ){
-		if( vc == 1 ){ r = 4000 / vl; g = 4000 / vl; b = 4000 / vl; } else { r = 4000 / vl; }
-		SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-		vl *= cos( (offset - rot) + PI / 1080 );
+
+		dest.h = CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
+		dest.y = 240 - dest.h / 2;
+		src.x = vh;
+		
+		if( vc == 1 ){ 
+
+			SDL_RenderCopy( renderer, brick, &src, &dest);
+		
+
+		} else if( vc == 2){ 
+			SDL_RenderCopy( renderer, ivy, &src, &dest);
+		}
+	
 		return vl;
 	}else{
-		if( hc == 1 ){ r = 4000 / hl; g = 4000 / hl; b = 4000 / hl; } else { r = 4000 / hl; }
-		SDL_SetRenderDrawColor(renderer, r, g, b, 0xff);
-		hl *= cos( (offset - rot) - PI / 1080 );
+		dest.h = CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
+		dest.y = 240 - dest.h / 2;
+		src.x = hh;
+		
+		if( hc == 1 ){ 
+
+			SDL_RenderCopy( renderer, brick, &src, &dest);
+			
+
+		} else if( hc == 2) { 
+			SDL_RenderCopy( renderer, ivy, &src, &dest);
+			
+		}
 		return hl;
 	}
 }
@@ -136,16 +194,11 @@ int cast_rays( ){
 	//right half of view
 	double offset = 0, dist;
 	int slice = 640 / 2;
-	SDL_Rect cur_slice;
-	cur_slice.x = slice;
-	cur_slice.w = 2;
 	
 	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2 ){
-		dist = cast_ray( rot + offset );
-		cur_slice.x = slice;
-		cur_slice.h = 200 / floor( dist ) * 277;
-		cur_slice.y = 240 - cur_slice.h / 2;
-		SDL_RenderFillRect(renderer, &cur_slice );
+		
+		cast_ray( rot + offset, slice );
+
 	}
 
 	/*left check of view*/
@@ -153,11 +206,8 @@ int cast_rays( ){
 	slice = 640 / 2;
 	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2 ){
 
-		dist = cast_ray( rot + offset );
-		cur_slice.x = slice;
-		cur_slice.h = CUBE_SIZE / floor( dist ) * 277;
-		cur_slice.y = 240 - cur_slice.h / 2;
-		SDL_RenderFillRect(renderer, &cur_slice );
+		cast_ray( rot + offset, slice );
+		
 	}
 }
 
@@ -222,6 +272,9 @@ int main( int argc, char *argv[] ){
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+
+	brick = load_texture( "brick.bmp ");
+	ivy = load_texture( "ivy.bmp ");
 
 	if( renderer && window ){
 		printf("Video Initialized!\n");
