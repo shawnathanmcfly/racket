@@ -44,7 +44,6 @@ SDL_Texture *load_texture( char *path ){
 	SDL_Surface *temp_surf;
 	SDL_Texture *texture;
 
-	printf( "ERROR: %s\n", path);
 
 	temp_surf = SDL_LoadBMP( path );
 
@@ -273,8 +272,8 @@ int main( int argc, char *argv[] ){
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 
-	brick = load_texture( "brick.bmp ");
-	ivy = load_texture( "ivy.bmp ");
+	brick = load_texture( "images/brick.bmp");
+	ivy = load_texture( "images/ivy.bmp");
 
 	if( renderer && window ){
 		printf("Video Initialized!\n");

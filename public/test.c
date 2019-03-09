@@ -278,8 +278,8 @@ int main( int argc, char *argv[] ){
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	
-	brick = load_texture( "brick.bmp ");
-	ivy = load_texture( "ivy.bmp ");
+	brick = load_texture( "brick.bmp");
+	ivy = load_texture( "ivy.bmp");
 
 	//if( back == 0)
 		//printf( "%s\n", SDL_GetError() );
