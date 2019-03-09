@@ -11,7 +11,7 @@ SDL_Renderer *renderer = 0;
 SDL_Texture *brick = 0, *ivy = 0;
 
 unsigned short quit = 0;
-double player_dir = -1, player_x = 300, player_y = 300, rot = 0.12;
+double player_dir = -1, rot = 0.12, player_x = 300, player_y = 300;
 
 int map_width = CUBE_SIZE * 18, map_height = CUBE_SIZE * 19;
 unsigned char level[19][18] = {
@@ -58,7 +58,7 @@ SDL_Texture *load_texture( char *path ){
 	return texture;
 }
 
-double cast_ray( double offset, int col_pos ){
+void cast_ray( double offset, int col_pos ){
 
 	if( offset > 2 * 3.14 )
 		offset -= 2 * 3.14;
@@ -73,8 +73,9 @@ double cast_ray( double offset, int col_pos ){
 	SDL_Rect src;
 	SDL_Rect dest;
 	
-	int step_y, step_x, y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start, vh, hh;
-	double hl, vl, r = 0, g = 0, b = 0, hc, vc;
+	int y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start;
+	double step_y, step_x, vh, hh, hl, vl, hc, vc;
+	
 	if( offset > 3.14 ){
 		step_y = -CUBE_SIZE;
 		step_x = CUBE_SIZE / tan(offset);	
@@ -154,7 +155,7 @@ double cast_ray( double offset, int col_pos ){
 	src.h = CUBE_SIZE;
 	if( vl < hl ){
 
-		dest.h = CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
+		dest.h = (int)CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = vh;
 		
@@ -163,13 +164,13 @@ double cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, brick, &src, &dest);
 		
 
-		} else if( vc = 2){ 
+		} else if( vc == 2){ 
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 		}
 	
-		return vl;
+		
 	}else{
-		dest.h = CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
+		dest.h = (int)CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = hh;
 		
@@ -182,11 +183,11 @@ double cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 			
 		}
-		return hl;
+		
 	}
 }
 
-int cast_rays( ){
+void cast_rays( ){
 
 	//right half of view
 	double offset = 0, dist;
@@ -278,8 +279,8 @@ int main( int argc, char *argv[] ){
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	
-	brick = load_texture( "brick.bmp");
-	ivy = load_texture( "ivy.bmp");
+	brick = load_texture( "images/brick.bmp");
+	ivy = load_texture( "images/ivy.bmp");
 
 	//if( back == 0)
 		//printf( "%s\n", SDL_GetError() );

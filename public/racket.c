@@ -10,6 +10,8 @@ SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
 
 SDL_Texture *brick = 0, *ivy = 0;
+SDL_Rect src;
+SDL_Rect dest;
 
 unsigned short quit = 0;
 double player_dir = -1, player_x = 300, player_y = 300, rot = 0.12;
@@ -42,8 +44,7 @@ unsigned char level[19][18] = {
 SDL_Texture *load_texture( char *path ){
 
 	SDL_Surface *temp_surf;
-	SDL_Texture *texture;
-
+	SDL_Texture *texture ;
 
 	temp_surf = SDL_LoadBMP( path );
 
@@ -60,7 +61,7 @@ SDL_Texture *load_texture( char *path ){
 	return texture;
 }
 
-double cast_ray( double offset, int col_pos ){
+void cast_ray( double offset, int col_pos ){
 
 	if( offset > 2 * 3.14 )
 		offset -= 2 * 3.14;
@@ -72,11 +73,11 @@ double cast_ray( double offset, int col_pos ){
 	//printf("OFFSET: %f\n", offset );
 
 	//horizontal check
-	SDL_Rect src;
-	SDL_Rect dest;
 	
-	int step_y, step_x, y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start, vh, hh;
-	double hl, vl, r = 0, g = 0, b = 0, hc, vc;
+	
+	int y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start;
+	double step_y, step_x, vh, hh, hl, vl, hc, vc;
+	
 	if( offset > 3.14 ){
 		step_y = -CUBE_SIZE;
 		step_x = CUBE_SIZE / tan(offset);	
@@ -153,7 +154,8 @@ double cast_ray( double offset, int col_pos ){
 	dest.x = col_pos;
 	dest.w = 2;
 	src.w = 2;
-	src.h = CUBE_SIZE;
+	src.h = 200;
+	
 	if( vl < hl ){
 
 		dest.h = CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
@@ -169,7 +171,7 @@ double cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 		}
 	
-		return vl;
+		
 	}else{
 		dest.h = CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
@@ -184,11 +186,11 @@ double cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 			
 		}
-		return hl;
+		
 	}
 }
 
-int cast_rays( ){
+void cast_rays( ){
 
 	//right half of view
 	double offset = 0, dist;
@@ -213,52 +215,81 @@ int cast_rays( ){
 void main_loop(){
 
 	SDL_Event e;
-	//Handle events on queue
-	while( SDL_PollEvent( &e ) != 0 )
-		;
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 )
+			;
 
-	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
-	if( currentKeyStates[ SDL_SCANCODE_Q ] )
-	{
-		quit = 1;
+		const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
+		if( currentKeyStates[ SDL_SCANCODE_Q ] )
+		{
+			quit = 1;
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+		{
+			rot += 1 * (4 * 3.14 / 180 );
+			if( rot > 6.28 ) 
+				rot = 0;
+			//printf( "DIR: %f\n", rot );
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+		{
+			rot += -1 * (4 * 3.14 / 180 );
+			if( rot < 0 ) 
+				rot = 6.28;
+			/*printf( "DIR: %f\n", rot );*/
+			
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_UP ] )
+		{
+			player_x += cos( rot) * 10;
+			player_y += sin( rot) * 10;
+			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
+			
+		}
+		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+		{
+			player_x += cos( rot) * -10;
+			player_y += sin( rot) * -10;
+			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
+			
+		}
+
+		/* Clear Screen */
+		SDL_Rect clear;
+		clear.x = 0;
+		clear.y = 0;
+		clear.w = 640;
+		clear.h = 480;
+		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+		SDL_RenderFillRect( renderer, &clear );
 		
-	}
-	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
-	{
-		rot += 1 * (4 * 3.14 / 180 );
-		if( rot > 6.28 ) 
-			rot = 0;
+		/*player pos
+		SDL_Rect p_pos;
+		p_pos.x = player_x;
+		p_pos.y = player_y;
+		p_pos.w = 2;
+		p_pos.h = 2;
+		SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
+		SDL_RenderDrawRect( renderer, &p_pos );*/
+
 		
-	}
-	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
-	{
-		rot += -1 * (4 * 3.14 / 180 );
-		if( rot < 0 ) 
-			rot = 6.28;
-	}
-	if( currentKeyStates[ SDL_SCANCODE_UP ] )
-	{
-		player_x += cos( rot) * 10;
-		player_y += sin( rot) * 10;
-	}
-	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-	{
-		player_x += cos( rot) * -10;
-		player_y += sin( rot) * -10;
-	}
 
-	/* Clear Screen */
-	SDL_Rect clear;
-	clear.x = 0;
-	clear.y = 0;
-	clear.w = 640;
-	clear.h = 480;
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-	SDL_RenderFillRect( renderer, &clear );
+		
+		//SDL_SetRenderDrawColor(renderer, 0x00, 0xff, 0x00, 0xff);
+		//SDL_RenderDrawLine(renderer, player_x, player_y, player_x + cos( rot ) * 10, player_y + sin( rot ) * 10);
+	
+		
 
-	cast_rays();
+		cast_rays( );
+	
 
-	SDL_RenderPresent( renderer );
+		SDL_RenderPresent( renderer );
+	
+	
+	
 }
 
 int main( int argc, char *argv[] ){
@@ -272,14 +303,16 @@ int main( int argc, char *argv[] ){
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 
-	brick = load_texture( "images/brick.bmp");
-	ivy = load_texture( "images/ivy.bmp");
+	
 
 	if( renderer && window ){
 		printf("Video Initialized!\n");
+
+		brick = load_texture( "images/brick.bmp");
+		ivy = load_texture( "images/ivy.bmp");
 	}
 
-	emscripten_set_main_loop( main_loop, -1, 1 );
+	emscripten_set_main_loop( main_loop, 200, 1 );
 
 	SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
