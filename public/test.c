@@ -2,11 +2,13 @@
 #include <stdio.h>
 #include <SDL.h>
 
-#define PI   3.14159265358979323846264338327950288
+#define PI  3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
 
 SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
+SDL_Rect src;
+SDL_Rect dest;
 
 SDL_Texture *brick = 0, *ivy = 0;
 
@@ -66,19 +68,16 @@ void cast_ray( double offset, int col_pos ){
 	if( offset < 0 )
 		offset += 2 * 3.14;
 
-
 	//printf("OFFSET: %f\n", offset );
 
 	//horizontal check
-	SDL_Rect src;
-	SDL_Rect dest;
 	
 	int y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start;
 	double step_y, step_x, vh, hh, hl, vl, hc, vc;
 	
 	if( offset > 3.14 ){
 		step_y = -CUBE_SIZE;
-		step_x = CUBE_SIZE / tan(offset);	
+		step_x = CUBE_SIZE / tan(offset);
 	}else{
 		step_y = CUBE_SIZE;
 		step_x = -(CUBE_SIZE / tan(offset));
@@ -107,7 +106,6 @@ void cast_ray( double offset, int col_pos ){
 		
 	}
 
-	
 	hl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
 
 	//vertical check
@@ -125,7 +123,7 @@ void cast_ray( double offset, int col_pos ){
 	
 	y_start = player_y - (player_x-x_start)*tan(offset);
 
-	if( y_start > 0 && y_start < map_height && 
+	if( y_start > 0 && y_start < map_height &&
 		x_start > 0 && x_start < map_width  ){
 		vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 		vh = y_start % CUBE_SIZE;
@@ -135,7 +133,6 @@ void cast_ray( double offset, int col_pos ){
 	
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
-		
 		x_start -= step_x;
 		y_start += step_y;
 
@@ -146,7 +143,6 @@ void cast_ray( double offset, int col_pos ){
 
 	}
 
-	
 	vl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
 
 	dest.x = col_pos;
@@ -162,13 +158,11 @@ void cast_ray( double offset, int col_pos ){
 		if( vc == 1 ){ 
 
 			SDL_RenderCopy( renderer, brick, &src, &dest);
-		
 
 		} else if( vc == 2){ 
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 		}
 	
-		
 	}else{
 		dest.h = (int)CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
@@ -177,13 +171,11 @@ void cast_ray( double offset, int col_pos ){
 		if( hc == 1 ){ 
 
 			SDL_RenderCopy( renderer, brick, &src, &dest);
-			
 
 		} else if( hc == 2) { 
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 			
-		}
-		
+		}	
 	}
 }
 
@@ -227,8 +219,6 @@ void main_loop(){
 			rot += 1 * (6 * 3.14 / 360 );
 			if( rot > 6.28 ) 
 				rot = 0.12;
-			
-			
 		}
 		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 		{
@@ -242,14 +232,11 @@ void main_loop(){
 			player_x += cos( rot) * 10;
 			player_y += sin( rot) * 10;
 			
-			
 		}
 		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 		{
 			player_x += cos( rot) * -10;
 			player_y += sin( rot) * -10;
-			
-			
 		}
 
 		//Clear Screen 
@@ -297,5 +284,4 @@ int main( int argc, char *argv[] ){
     SDL_Quit();
 
     return 0;
-		
 }

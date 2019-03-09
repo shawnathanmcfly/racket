@@ -26,14 +26,14 @@ unsigned char level[19][18] = {
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 1, 1, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+	{ 1, 0, 0, 0, 0, 2, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -148,7 +148,6 @@ void cast_ray( double offset, int col_pos ){
 
 	}
 
-	
 	vl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
 
 	dest.x = col_pos;
@@ -186,7 +185,6 @@ void cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 			
 		}
-		
 	}
 }
 
@@ -208,88 +206,62 @@ void cast_rays( ){
 	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2 ){
 
 		cast_ray( rot + offset, slice );
-		
 	}
 }
 
 void main_loop(){
 
 	SDL_Event e;
-		//Handle events on queue
-		while( SDL_PollEvent( &e ) != 0 )
-			;
+	//Handle events on queue
+	while( SDL_PollEvent( &e ) != 0 )
+		;
 
-		const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
-		if( currentKeyStates[ SDL_SCANCODE_Q ] )
-		{
-			quit = 1;
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
-		{
-			rot += 1 * (4 * 3.14 / 180 );
-			if( rot > 6.28 ) 
-				rot = 0;
-			//printf( "DIR: %f\n", rot );
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
-		{
-			rot += -1 * (4 * 3.14 / 180 );
-			if( rot < 0 ) 
-				rot = 6.28;
-			/*printf( "DIR: %f\n", rot );*/
-			
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_UP ] )
-		{
-			player_x += cos( rot) * 10;
-			player_y += sin( rot) * 10;
-			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
-			
-		}
-		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
-		{
-			player_x += cos( rot) * -10;
-			player_y += sin( rot) * -10;
-			/*printf( "X: %f - Y: %f\n", player_x, player_y );*/
-			
-		}
-
-		/* Clear Screen */
-		SDL_Rect clear;
-		clear.x = 0;
-		clear.y = 0;
-		clear.w = 640;
-		clear.h = 480;
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-		SDL_RenderFillRect( renderer, &clear );
+	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
+	if( currentKeyStates[ SDL_SCANCODE_Q ] )
+	{
+		quit = 1;
 		
-		/*player pos
-		SDL_Rect p_pos;
-		p_pos.x = player_x;
-		p_pos.y = player_y;
-		p_pos.w = 2;
-		p_pos.h = 2;
-		SDL_SetRenderDrawColor(renderer, 0xff, 0x00, 0x00, 0xff);
-		SDL_RenderDrawRect( renderer, &p_pos );*/
-
+	}
+	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+	{
+		rot += 1 * (4 * 3.14 / 180 );
+		if( rot > 6.28 ) 
+			rot = 0;
 		
-
+	}
+	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+	{
+		rot += -1 * (4 * 3.14 / 180 );
+		if( rot < 0 ) 
+			rot = 6.28;
 		
-		//SDL_SetRenderDrawColor(renderer, 0x00, 0xff, 0x00, 0xff);
-		//SDL_RenderDrawLine(renderer, player_x, player_y, player_x + cos( rot ) * 10, player_y + sin( rot ) * 10);
-	
 		
+	}
+	if( currentKeyStates[ SDL_SCANCODE_UP ] )
+	{
+		player_x += cos( rot) * 20;
+		player_y += sin( rot) * 20;
+		
+	}
+	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+	{
+		player_x += cos( rot) * -20;
+		player_y += sin( rot) * -20;
 
-		cast_rays( );
-	
+	}
 
-		SDL_RenderPresent( renderer );
-	
-	
-	
+	/* Clear Screen */
+	SDL_Rect clear;
+	clear.x = 0;
+	clear.y = 0;
+	clear.w = 640;
+	clear.h = 480;
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+	SDL_RenderFillRect( renderer, &clear );
+
+	cast_rays( );
+
+	SDL_RenderPresent( renderer );
 }
 
 int main( int argc, char *argv[] ){
@@ -303,8 +275,6 @@ int main( int argc, char *argv[] ){
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
 
-	
-
 	if( renderer && window ){
 		printf("Video Initialized!\n");
 
@@ -312,14 +282,13 @@ int main( int argc, char *argv[] ){
 		ivy = load_texture( "images/ivy.bmp");
 	}
 
-	emscripten_set_main_loop( main_loop, 200, 1 );
+	emscripten_set_main_loop( main_loop, -1, 1 );
 
 	SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
     return 0;
-		
 }
 
 
