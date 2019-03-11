@@ -1,6 +1,6 @@
 #include <math.h>
 #include <stdio.h>
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 #define PI  3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
@@ -37,7 +37,7 @@ unsigned char level[19][18] = {
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-	
+
 };
 
 SDL_Texture *load_texture( char *path ){
@@ -71,10 +71,10 @@ void cast_ray( double offset, int col_pos ){
 	//printf("OFFSET: %f\n", offset );
 
 	//horizontal check
-	
+
 	int y_start = floor(player_y / CUBE_SIZE) * CUBE_SIZE - 1, x_start;
 	double step_y, step_x, vh, hh, hl, vl, hc, vc;
-	
+
 	if( offset > 3.14 ){
 		step_y = -CUBE_SIZE;
 		step_x = CUBE_SIZE / tan(offset);
@@ -85,9 +85,9 @@ void cast_ray( double offset, int col_pos ){
 	}
 
 	x_start = player_x - (player_y-y_start)/tan(offset);
-		
+
 	if( x_start > 0 && x_start < map_width ){
-		
+
 		hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 		hh = x_start % CUBE_SIZE;
 	}
@@ -95,7 +95,7 @@ void cast_ray( double offset, int col_pos ){
 			y_start > 0 && y_start < map_height &&
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
-		
+
 		x_start -= step_x;
 		y_start += step_y;
 
@@ -103,7 +103,7 @@ void cast_ray( double offset, int col_pos ){
 			hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 			hh = x_start % CUBE_SIZE;
 		}
-		
+
 	}
 
 	hl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
@@ -113,14 +113,14 @@ void cast_ray( double offset, int col_pos ){
 	if( offset < 4.71 && offset > 1.57 ){
 		step_x = CUBE_SIZE;
 		step_y = -(CUBE_SIZE * tan(offset));
-		x_start -= 1;	
+		x_start -= 1;
 	}else{
 		step_x = -CUBE_SIZE;
 		step_y = CUBE_SIZE * tan(offset);
 		x_start += CUBE_SIZE;
 	}
 
-	
+
 	y_start = player_y - (player_x-x_start)*tan(offset);
 
 	if( y_start > 0 && y_start < map_height &&
@@ -128,9 +128,9 @@ void cast_ray( double offset, int col_pos ){
 		vc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 		vh = y_start % CUBE_SIZE;
 	}
-	
+
 	while( y_start > 0 && y_start < map_height &&
-	
+
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
 		x_start -= step_x;
@@ -154,28 +154,28 @@ void cast_ray( double offset, int col_pos ){
 		dest.h = (int)CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = vh;
-		
-		if( vc == 1 ){ 
+
+		if( vc == 1 ){
 
 			SDL_RenderCopy( renderer, brick, &src, &dest);
 
-		} else if( vc == 2){ 
+		} else if( vc == 2){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 		}
-	
+
 	}else{
 		dest.h = (int)CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = hh;
-		
-		if( hc == 1 ){ 
+
+		if( hc == 1 ){
 
 			SDL_RenderCopy( renderer, brick, &src, &dest);
 
-		} else if( hc == 2) { 
+		} else if( hc == 2) {
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
-			
-		}	
+
+		}
 	}
 }
 
@@ -184,9 +184,9 @@ void cast_rays( ){
 	//right half of view
 	double offset = 0, dist;
 	int slice = 640 / 2;
-	
+
 	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2 ){
-		
+
 		cast_ray( rot + offset, slice );
 
 	}
@@ -197,7 +197,7 @@ void cast_rays( ){
 	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2 ){
 
 		cast_ray( rot + offset, slice );
-		
+
 	}
 }
 
@@ -217,21 +217,21 @@ void main_loop(){
 		if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
 		{
 			rot += 1 * (6 * 3.14 / 360 );
-			if( rot > 6.28 ) 
+			if( rot > 6.28 )
 				rot = 0.12;
 		}
 		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 		{
 			rot += -1 * (6 * 3.14 / 360 );
-			if( rot < 0 ) 
+			if( rot < 0 )
 				rot = 6.28;
-			
+
 		}
 		if( currentKeyStates[ SDL_SCANCODE_UP ] )
 		{
 			player_x += cos( rot) * 10;
 			player_y += sin( rot) * 10;
-			
+
 		}
 		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 		{
@@ -239,7 +239,7 @@ void main_loop(){
 			player_y += sin( rot) * -10;
 		}
 
-		//Clear Screen 
+		//Clear Screen
 		SDL_Rect clear;
 		clear.x = 0;
 		clear.y = 0;
@@ -256,7 +256,7 @@ void main_loop(){
 }
 
 int main( int argc, char *argv[] ){
-	
+
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(
         "RACKET",
@@ -265,7 +265,7 @@ int main( int argc, char *argv[] ){
         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	
+
 	brick = load_texture( "images/brick.bmp");
 	ivy = load_texture( "images/ivy.bmp");
 
