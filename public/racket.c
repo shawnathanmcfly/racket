@@ -2,13 +2,14 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #define PI   3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
 
 SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
+
 
 SDL_Texture *brick = 0, *ivy = 0, *back = 0;
 SDL_Rect src;

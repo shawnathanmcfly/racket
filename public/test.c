@@ -1,16 +1,19 @@
 #include <math.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #define PI  3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
+#define MUS_PATH "musak.mp3"
 
+Mix_Music *musak = 0;
 SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
 SDL_Rect src;
 SDL_Rect dest;
 
-SDL_Texture *brick = 0, *ivy = 0;
+SDL_Texture *brick = 0, *ivy = 0, *vend = 0;
 
 unsigned short quit = 0;
 double player_dir = -1, rot = 0.12, player_x = 300, player_y = 300;
@@ -18,7 +21,7 @@ double player_dir = -1, rot = 0.12, player_x = 300, player_y = 300;
 int map_width = CUBE_SIZE * 18, map_height = CUBE_SIZE * 19;
 unsigned char level[19][18] = {
 
-	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
+	{ 1, 1, 1, 1, 3, 3, 3, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 2, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 },
@@ -161,7 +164,8 @@ void cast_ray( double offset, int col_pos ){
 
 		} else if( vc == 2){
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
-		}
+		} else if( vc == 3 )
+			SDL_RenderCopy( renderer, vend, &src, &dest);
 
 	}else{
 		dest.h = (int)CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
@@ -175,7 +179,8 @@ void cast_ray( double offset, int col_pos ){
 		} else if( hc == 2) {
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
 
-		}
+		} else if( hc == 3)
+			SDL_RenderCopy( renderer, vend, &src, &dest);
 	}
 }
 
@@ -245,7 +250,7 @@ void main_loop(){
 		clear.y = 0;
 		clear.w = 640;
 		clear.h = 480;
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
+		SDL_SetRenderDrawColor(renderer, 0x22, 0x22, 0x22, 0xff);
 		SDL_RenderFillRect( renderer, &clear );
 
 		cast_rays();
@@ -264,10 +269,28 @@ int main( int argc, char *argv[] ){
         640, 480,
         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
+	if (SDL_Init(SDL_INIT_AUDIO) <= 0){
+		printf( "Error: %s\n", SDL_GetError() );
+	}
+
+	if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) < 0 ){
+		printf( "Error: %s\n", SDL_GetError() );
+	}
+
+	musak = Mix_LoadMUS( MUS_PATH );
+	if( musak == NULL ){
+		printf( "Error: %s\n", SDL_GetError() );
+	}
+
+	if ( Mix_PlayMusic( musak, -1) < 0 ){
+		printf( "Error: %s\n", SDL_GetError() );
+	}
+
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	brick = load_texture( "images/brick.bmp");
 	ivy = load_texture( "images/ivy.bmp");
+	vend = load_texture( "images/vend.bmp");
 
 	//if( back == 0)
 		//printf( "%s\n", SDL_GetError() );
@@ -278,9 +301,12 @@ int main( int argc, char *argv[] ){
 
 	main_loop();
 
+	SDL_DestroyTexture(vend);
+	SDL_DestroyTexture(ivy);
 	SDL_DestroyTexture( brick );
 	SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+  SDL_DestroyWindow(window);
+	Mix_Quit();
     SDL_Quit();
 
     return 0;
