@@ -74,6 +74,7 @@ SDL_Texture *load_texture( char *path ){
 }
 
 void draw_object( Object *object ){
+
 	double d;
 	d = sqrt( (player_x - object->dim.x) * (player_x - object->dim.x) +
 		(player_y - object->dim.y) * (player_y - object->dim.y) );
@@ -89,7 +90,6 @@ void draw_object( Object *object ){
 
 	src.w = 57; src.h = 96; src.x = 0, src.y = 0;
 	SDL_RenderCopy( renderer, bad, &src, &fillrect);
-
 
 	/*printf("ANGLE OF OBJECT: %f\n",
 		atan2( player_y - object->dim.y, player_x - object->dim.x ) * 180 / PI);
@@ -134,7 +134,6 @@ void cast_ray( double offset, int col_pos ){
 			y_start > 0 && y_start < map_height &&
 	!level[y_start / CUBE_SIZE][x_start / CUBE_SIZE] ){
 
-
 		x_start -= step_x;
 		y_start += step_y;
 
@@ -142,7 +141,6 @@ void cast_ray( double offset, int col_pos ){
 			hc = level[y_start / CUBE_SIZE][x_start / CUBE_SIZE];
 			hh = x_start % CUBE_SIZE;
 		}
-
 	}
 
 	hl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
@@ -158,7 +156,6 @@ void cast_ray( double offset, int col_pos ){
 		step_y = CUBE_SIZE * tan(offset);
 		x_start += CUBE_SIZE;
 	}
-
 
 	y_start = player_y - (player_x-x_start)*tan(offset);
 

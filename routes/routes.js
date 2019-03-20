@@ -6,13 +6,12 @@ module.exports = (app) => {
 
     req.body.name = stats.randomNewbName();
 
-  
+    console.log( req.body.name + " joined the game!" );
 
     stats.players.push(req.body);
 
     stats.getPlayers();
 
-    //stats.getPlayers();
     res.json(req.body);
 
   })

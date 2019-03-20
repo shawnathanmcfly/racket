@@ -10,9 +10,11 @@ module.exports = {
       "Duke Cuckem",
       "A Zima Pleze",
       "SafeZone1990",
+
+      //Reserved for Travis Achimasi
       "ChinUpper",
       "Nose Pointer",
-      "Fuck My Wife"
+
   ],
 
   getPlayers : function(){
@@ -26,21 +28,20 @@ module.exports = {
 
       select = this.newbNames[ Math.floor((Math.random() * this.newbNames.length ))];
       found = false;
-      
-      if( this.players.length > 0 ){
-      for( let i in this.players ){
-        if( select === this.players[i].name )
-          found = false;
 
+      if( this.players.length > 0 ){
+        for( let i in this.players ){
+          if( select === this.players[i].name )
+            found = true;
+        }
       }
-    }
 
     }while( found )
 
     return select;
   },
 
-  playerLeave : function(playername) {
+  playerLeave : function(playername){
 
     for( let i in this.players ){
       if( this.players[i].name === playername ){
