@@ -52,7 +52,6 @@ unsigned char level[19][18] = {
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-
 };
 
 SDL_Texture *load_texture( char *path ){
@@ -230,20 +229,14 @@ void cast_rays( ){
 	double offset = 0, dist;
 	int slice = 640 / 2;
 
-	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2, traceCnt++ ){
-
+	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2, traceCnt++ )
 		cast_ray( rot + offset, slice );
-
-	}
 
 	/*left check of view*/
 	offset = -1 * 3.14 / 1080;
 	slice = 640 / 2;
-	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2, traceCnt++ ){
-
+	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2, traceCnt++ )
 		cast_ray( rot + offset, slice );
-
-	}
 
 	traceCnt = 0;
 	draw_object( block );
@@ -253,42 +246,33 @@ void main_loop(){
 	block->dim.y++;
 
 	SDL_Event e;
-	//Handle events on queue
+
 	while( SDL_PollEvent( &e ) != 0 )
 		;
 
 	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
-	if( currentKeyStates[ SDL_SCANCODE_Q ] )
-	{
-		quit = 1;
 
-	}
 	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
 	{
-		rot += 1 * (3 * 3.14 / 180 );
+		rot += 3 * 3.14 / 180;
 		if( rot > 6.28 )
 			rot = 0;
-
 	}
 	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 	{
-		rot += -1 * (3 * 3.14 / 180 );
+		rot += -(3 * 3.14 / 180 );
 		if( rot < 0 )
 			rot = 6.28;
-
-
 	}
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
 		player_x += cos( rot) * 20;
 		player_y += sin( rot) * 20;
-
 	}
 	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 	{
 		player_x += cos( rot) * -20;
 		player_y += sin( rot) * -20;
-
 	}
 
 	/* Clear Screen */
@@ -328,9 +312,6 @@ int main( int argc, char *argv[] ){
 	vend = load_texture( "images/vend.bmp");
 	bad = load_texture( "images/bad.bmp");
 
-	//if( back == 0)
-		//printf( "%s\n", SDL_GetError() );
-
 	if( renderer && window ){
 		printf("Video Initialized!\n");
 	}
@@ -345,7 +326,7 @@ int main( int argc, char *argv[] ){
 	SDL_DestroyTexture( brick );
 	SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
-    SDL_Quit();
+  SDL_Quit();
 
-    return 0;
+  return 0;
 }
