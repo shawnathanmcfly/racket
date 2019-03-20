@@ -1,22 +1,31 @@
 #include <math.h>
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 
 #define PI  3.14159265358979323846264338327950288
 #define CUBE_SIZE 200
-#define MUS_PATH "musak.mp3"
 
-Mix_Music *musak = 0;
+typedef struct {
+	SDL_Rect dim;
+
+}Object;
+
+double *wallTrace;
+int traceCnt = 0;
+
+Object *block;
+
+SDL_Rect fillrect;
+
 SDL_Window *window = 0;
 SDL_Renderer *renderer = 0;
 SDL_Rect src;
 SDL_Rect dest;
 
-SDL_Texture *brick = 0, *ivy = 0, *vend = 0;
+SDL_Texture *brick = 0, *ivy = 0, *vend = 0, *bad = 0;
 
 unsigned short quit = 0;
-double player_dir = -1, rot = 0.12, player_x = 300, player_y = 300;
+double player_dir = -1, rot = 0.12, player_x = 600, player_y = 600;
 
 int map_width = CUBE_SIZE * 18, map_height = CUBE_SIZE * 19;
 unsigned char level[19][18] = {
@@ -53,14 +62,41 @@ SDL_Texture *load_texture( char *path ){
 	if( temp_surf == 0)
 		printf( "ERROR: %s\n", SDL_GetError());
 
+	SDL_SetColorKey( temp_surf, SDL_TRUE, SDL_MapRGB( temp_surf->format, 0x00, 0xff, 0xff ) );
 	texture = SDL_CreateTextureFromSurface(renderer, temp_surf);
 
 	if( texture == 0)
 		printf( "ERROR: %s\n", SDL_GetError());
 
-	SDL_FreeSurface( temp_surf) ;
+	SDL_FreeSurface( temp_surf);
 
 	return texture;
+}
+
+void draw_object( Object *object ){
+	double d;
+	d = sqrt( (player_x - object->dim.x) * (player_x - object->dim.x) +
+		(player_y - object->dim.y) * (player_y - object->dim.y) );
+
+  fillrect.w = 80 / d * 577;
+	fillrect.h = 150 / d * 577;
+
+	fillrect.x = (640 / 2 - fillrect.w / 2) +
+	((atan2( player_y - object->dim.y, player_x - object->dim.x ) * 180 / PI) -
+	(rot * 180 / PI - 180)) * 12;
+
+	fillrect.y = 240 - ((150/2) / d * 577) / 2 ;//d - fillrect.h;
+
+	src.w = 57; src.h = 96; src.x = 0, src.y = 0;
+	SDL_RenderCopy( renderer, bad, &src, &fillrect);
+
+
+	/*printf("ANGLE OF OBJECT: %f\n",
+		atan2( player_y - object->dim.y, player_x - object->dim.x ) * 180 / PI);
+
+		printf("ANGLE OF PLAYER: %f\n",
+			rot * 180 / PI - 180 );*/
+
 }
 
 void cast_ray( double offset, int col_pos ){
@@ -154,6 +190,8 @@ void cast_ray( double offset, int col_pos ){
 	src.h = CUBE_SIZE;
 	if( vl < hl ){
 
+		wallTrace[traceCnt] = vl;
+
 		dest.h = (int)CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = vh;
@@ -168,9 +206,12 @@ void cast_ray( double offset, int col_pos ){
 			SDL_RenderCopy( renderer, vend, &src, &dest);
 
 	}else{
+
 		dest.h = (int)CUBE_SIZE / floor( hl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = hh;
+
+		wallTrace[traceCnt] = hl;
 
 		if( hc == 1 ){
 
@@ -185,12 +226,12 @@ void cast_ray( double offset, int col_pos ){
 }
 
 void cast_rays( ){
-
+	traceCnt = 0;
 	//right half of view
 	double offset = 0, dist;
 	int slice = 640 / 2;
 
-	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2 ){
+	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2, traceCnt++ ){
 
 		cast_ray( rot + offset, slice );
 
@@ -199,16 +240,21 @@ void cast_rays( ){
 	/*left check of view*/
 	offset = -1 * 3.14 / 1080;
 	slice = 640 / 2;
-	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2 ){
+	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2, traceCnt++ ){
 
 		cast_ray( rot + offset, slice );
 
 	}
+
+	traceCnt = 0;
+	draw_object( block );
 }
 
 void main_loop(){
 
 	while( !quit ){
+
+		block->dim.y++;
 
 		SDL_Event e;
 		while( SDL_PollEvent( &e ) != 0 )
@@ -224,6 +270,8 @@ void main_loop(){
 			rot += 1 * (6 * 3.14 / 360 );
 			if( rot > 6.28 )
 				rot = 0.12;
+
+
 		}
 		if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 		{
@@ -236,12 +284,13 @@ void main_loop(){
 		{
 			player_x += cos( rot) * 10;
 			player_y += sin( rot) * 10;
-
 		}
 		if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 		{
 			player_x += cos( rot) * -10;
 			player_y += sin( rot) * -10;
+
+
 		}
 
 		//Clear Screen
@@ -261,6 +310,10 @@ void main_loop(){
 }
 
 int main( int argc, char *argv[] ){
+	wallTrace = (double *)malloc( sizeof(double) * 320 );
+	block = ( Object *)malloc( sizeof( Object ));
+	block->dim.x = 600; block->dim.y = 250;
+	block->dim.w = 30; block->dim.h = 150;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	window = SDL_CreateWindow(
@@ -269,28 +322,12 @@ int main( int argc, char *argv[] ){
         640, 480,
         SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
 
-	if (SDL_Init(SDL_INIT_AUDIO) <= 0){
-		printf( "Error: %s\n", SDL_GetError() );
-	}
-
-	if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) < 0 ){
-		printf( "Error: %s\n", SDL_GetError() );
-	}
-
-	musak = Mix_LoadMUS( MUS_PATH );
-	if( musak == NULL ){
-		printf( "Error: %s\n", SDL_GetError() );
-	}
-
-	if ( Mix_PlayMusic( musak, -1) < 0 ){
-		printf( "Error: %s\n", SDL_GetError() );
-	}
-
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	brick = load_texture( "images/brick.bmp");
 	ivy = load_texture( "images/ivy.bmp");
 	vend = load_texture( "images/vend.bmp");
+	bad = load_texture( "images/bad.bmp");
 
 	//if( back == 0)
 		//printf( "%s\n", SDL_GetError() );
@@ -301,12 +338,14 @@ int main( int argc, char *argv[] ){
 
 	main_loop();
 
+	free( block );
+	free( wallTrace );
 	SDL_DestroyTexture(vend);
+	SDL_DestroyTexture(bad);
 	SDL_DestroyTexture(ivy);
 	SDL_DestroyTexture( brick );
 	SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
-	Mix_Quit();
     SDL_Quit();
 
     return 0;

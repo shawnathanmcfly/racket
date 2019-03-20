@@ -1,14 +1,23 @@
+var playerName = "";
+
+function getPlayerStat( x, y, r ){
+  return(
+    $.post("/", { x: x, y: y, r: r }, function(data){
+        playerName = data.name;
+
+        console.log( playerName );
+
+    })
+  )
+}
 
 $(
 
-  $.post("/", {
 
-    name: "Noobius",
-    x: "300",
-    y: "300",
-    dir: "0.43"
+  onunload = function(){
 
-    } ,function(data){
-      console.log(data);
-  })
+    $.post("/signoff", { name: playerName });
+
+  }
+
 )

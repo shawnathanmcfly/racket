@@ -2,20 +2,25 @@ var stats = require('../stats/players');
 
 module.exports = (app) => {
 
-  app.post("/", (req, res) => {
+    app.post("/", (req, res) => {
 
-    res.json({ msg: req.body.name +  " joined the game!"});
+    req.body.name = stats.randomNewbName();
+
+  
 
     stats.players.push(req.body);
 
-
     stats.getPlayers();
 
-
-
-
+    //stats.getPlayers();
+    res.json(req.body);
 
   })
 
+  app.post("/signoff", (req, res) => {
 
+    stats.playerLeave( req.body.name );
+    res.end();
+
+  })
 }
