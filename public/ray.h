@@ -52,7 +52,8 @@ void cast_ray( double offset, int col_pos ){
 		}
 	}
 
-	hl = sqrt( (player_x - x_start) * (player_x - x_start) + (player_y - y_start) * (player_y - y_start) );
+	hl = sqrt( (player_x - x_start) * (player_x - x_start) +
+    (player_y - y_start) * (player_y - y_start) );
 
 	//vertical check
 	x_start = floor(player_x/CUBE_SIZE) * CUBE_SIZE;
@@ -101,14 +102,14 @@ void cast_ray( double offset, int col_pos ){
 		dest.y = 240 - dest.h / 2;
 		src.x = vh;
 
-		if( vc == 1 ){
-
+		if( vc == 1 )
 			SDL_RenderCopy( renderer, brick, &src, &dest);
-
-		} else if( vc == 2){
+		else if( vc == 2)
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
-		} else if( vc == 3 )
+		else if( vc == 3 )
 			SDL_RenderCopy( renderer, vend, &src, &dest);
+    else if( vc == 4 )
+			SDL_RenderCopy( renderer, old_wall, &src, &dest);
 
 	}else{
 
@@ -118,15 +119,14 @@ void cast_ray( double offset, int col_pos ){
 
 		wallTrace[traceCnt] = hl;
 
-		if( hc == 1 ){
-
+		if( hc == 1 )
 			SDL_RenderCopy( renderer, brick, &src, &dest);
-
-		} else if( hc == 2) {
+		else if( hc == 2)
 			SDL_RenderCopy( renderer, ivy, &src, &dest);
-
-		} else if( hc == 3)
+		else if( hc == 3)
 			SDL_RenderCopy( renderer, vend, &src, &dest);
+    else if( hc == 4)
+			SDL_RenderCopy( renderer, old_wall, &src, &dest);
 	}
 }
 

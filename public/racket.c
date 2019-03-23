@@ -16,7 +16,6 @@ unsigned short quit = 0;
 //Main loop for EMSCRIPTEN to use in browser SDL_Window
 //
 void main_loop(){
-	block->dim.y++;
 
 	SDL_Event e;
 
@@ -32,7 +31,7 @@ void main_loop(){
 	}
 	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 	{
-		rot += -(3 * 3.14 / 180 );
+		rot += -(3 * 3.14 / 180);
 		if( rot < 0 )
 			rot = 6.28;
 	}
@@ -56,58 +55,44 @@ void main_loop(){
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
 	SDL_RenderFillRect( renderer, &clear );
 
-	cast_rays( );
+	cast_rays();
 
-	draw_object( block );
+	draw_objects();
 
 	SDL_RenderPresent( renderer );
 }
 
 int main( int argc, char *argv[] ){
 
-	//1D list of wall distances to clip out sprites if they are behind walls
-	block = ( Object *)malloc( sizeof( Object ));
-	block->dim.x = 600; block->dim.y = 250;
-	block->dim.w = 30; block->dim.h = 150;
-
-	//Send player position to server when they login initially
-	//
-	//NOTE: This is done to make sure the server adds new player data
-	//			to it's dynamic array of current players online
-	player_data_to_server( player_x, player_y, rot );
-
-	SDL_Init(SDL_INIT_VIDEO);
-	window = SDL_CreateWindow(
-        "RACKET",
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        640, 480,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-			);
-
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	brick = load_texture( "images/brick.bmp");
-	ivy = load_texture( "images/ivy.bmp");
-	vend = load_texture( "images/vend.bmp");
-	bad = load_texture( "images/bad.bmp");
-
-	//Make sure renderer and window were Initialized
-	if( renderer && window )
-		printf("Video Initialized!\n");
+	graphics_init();
 
 	//
 	//point main loop function to emscripten
 	//
+
+	load_object( 0, 600, 600, 0.42, 2, bad );
+	load_object( 0, 600, 700, 0.42, 2, bad );
+	load_object( 0, 600, 800, 0.42, 2, bad );
+	load_object( 0, 600, 900, 0.42, 2, bad );
+	load_object( 0, 600, 1000, 0.42, 2, bad );
+	load_object( 0, 600, 1100, 0.42, 2, bad );
+	load_object( 0, 600, 1200, 0.42, 2, bad );
+	load_object( 0, 600, 1300, 0.42, 2, bad );
+	load_object( 0, 800, 600, 0.42, 2, bad );
+	load_object( 0, 800, 700, 0.42, 2, bad );
+	load_object( 0, 800, 800, 0.42, 2, bad );
+	load_object( 0, 800, 900, 0.42, 2, bad );
+	load_object( 0, 800, 1000, 0.42, 2, bad );
+	load_object( 0, 800, 1100, 0.42, 2, bad );
+	load_object( 0, 800, 1200, 0.42, 2, bad );
+	load_object( 0, 800, 1300, 0.42, 2, bad );
+
+
 	emscripten_set_main_loop( main_loop, -1, 1 );
 
-	free( block );
-	SDL_DestroyTexture( vend );
-	SDL_DestroyTexture( bad );
-	SDL_DestroyTexture( ivy );
-	SDL_DestroyTexture( brick );
-	SDL_DestroyRenderer( renderer );
-  SDL_DestroyWindow( window );
-  SDL_Quit();
+	destroy_objects();
+
+	graphics_rem();
 
   return 0;
 }

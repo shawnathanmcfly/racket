@@ -25,7 +25,6 @@ module.exports = {
     let select, found = true;
 
     do{
-
       select = this.newbNames[ Math.floor((Math.random() * this.newbNames.length ))];
       found = false;
 
@@ -35,7 +34,6 @@ module.exports = {
             found = true;
         }
       }
-
     }while( found )
 
     return select;
