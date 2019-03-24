@@ -10,7 +10,6 @@ module.exports = (app) => {
 
     stats.players.push(req.body);
 
-
     res.json(req.body);
 
   })
@@ -19,6 +18,21 @@ module.exports = (app) => {
 
     res.json( stats.players );
   })
+
+  app.post( "/data", (req, res) => {
+
+    for( let i in stats.players ){
+
+      if( stats.players[i].name === req.body.name ){
+        stats.players[i].x = req.body.x;
+        stats.players[i].y = req.body.y;
+        stats.players[i].r = req.body.r;
+        break;
+      }
+    }
+
+    res.end();
+  });
 
   app.post("/signoff", (req, res) => {
 

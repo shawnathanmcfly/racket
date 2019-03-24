@@ -56,6 +56,7 @@ void main_loop(){
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
 	SDL_RenderFillRect( renderer, &clear );*/
 
+	send_player_data( player_x, player_y, rot );
 	player_data_from_server();
 	SDL_RenderPresent( renderer );
 

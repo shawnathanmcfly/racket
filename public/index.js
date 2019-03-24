@@ -9,6 +9,14 @@ function getPlayerStat( x, y, r ){
   )
 }
 
+function sendPlayerData( x, y, r ){
+  return(
+    $.post("/data", {x:x, y:y, r:r, name:playerName }, function(data){
+
+    })
+  )
+}
+
 function getPlayerData(){
   $.get("/data", function(data){
 
