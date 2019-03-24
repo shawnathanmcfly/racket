@@ -81,6 +81,7 @@ void graphics_rem(){
   SDL_Quit();
 }
 
+EMSCRIPTEN_KEEPALIVE
 void draw_object( double x, double y, double r ){
 	double d, object_angle, player_angle, adjust;
 
@@ -107,7 +108,6 @@ void draw_object( double x, double y, double r ){
 	fillrect.x = ((640 / 2) - (fillrect.w/2)) + (object_angle - player_angle) * 12;
 	fillrect.y = 240 - (90 / d);
 
-
 	SDL_RenderCopy( renderer, bad, NULL, &fillrect);
 }
 
@@ -118,6 +118,8 @@ void draw_objects( double *list, int size ){
 		draw_object( list[i], list[i+1], list[i+2] );
 		//printf("%f - %f - %f\n", list[i], list[i+1], list[i+2]);
 	}
+
+	free( list );
 }
 
 #endif

@@ -13,7 +13,7 @@ function getPlayerData(){
   $.get("/data", function(data){
 
     const arr = new Float64Array( data.length * 3 );
-    var buff;
+    let buff;
 
     for( let i in data ){
       arr[i*3] = data[i].x;
@@ -24,7 +24,7 @@ function getPlayerData(){
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
     Module._draw_objects( buff, arr.length );
-    Module._free( buff );
+    //Module._free( buff );
   })
 }
 
