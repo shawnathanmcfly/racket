@@ -57,7 +57,7 @@ void main_loop(){
 	SDL_RenderFillRect( renderer, &clear );
 
 	cast_rays();
-	player_data_to_server( player_x, player_y, rot );
+
 	player_data_from_server();
 	SDL_RenderPresent( renderer );
 }
