@@ -81,42 +81,42 @@ void graphics_rem(){
   SDL_Quit();
 }
 
-void draw_object( struct Object *object ){
+void draw_object( double x, double y, double r ){
 	double d, object_angle, player_angle, adjust;
 
-	d = sqrt( (player_x - object->x) * (player_x - object->x) +
-		(player_y - object->y) * (player_y - object->y) );
+	d = sqrt( (player_x - x) * (player_x - x) +
+		(player_y - y) * (player_y - y) );
 
-  fillrect.w = object->w / d * 577;
-	fillrect.h = object->h / d * 577;
+  fillrect.w = 30 / d * 577;
+	fillrect.h = 90 / d * 577;
 
 	player_angle = rot;
 	player_angle *= 180 / PI;
 	player_angle -= 180;
 
-	object_angle = atan2( player_y - (*cur_object)->y, player_x -
-		(*cur_object)->x ) * 180 / PI;
+	object_angle = atan2( player_y - y, player_x - x ) * 180 / PI;
 
-	if( player_x < object->x){
-		if( player_angle < 0 && player_y > object->y )
+	if( player_x < x){
+		if( player_angle < 0 && player_y > y )
 			player_angle += 360;
-		else if( player_angle < 180 && player_angle > 0 && player_y <= object->y ){
+		else if( player_angle < 180 && player_angle > 0 && player_y <= y ){
 			object_angle += 360;
 		}
 	}
 
 	fillrect.x = ((640 / 2) - (fillrect.w/2)) + (object_angle - player_angle) * 12;
-	fillrect.y = 240 - (object->h / d);
+	fillrect.y = 240 - (90 / d);
 
 
-	SDL_RenderCopy( renderer, object->sprite, NULL, &fillrect);
+	SDL_RenderCopy( renderer, bad, NULL, &fillrect);
 }
 
-void draw_objects(){
-	cur_object = &object_list;
-	while( *cur_object ){
-		draw_object( *cur_object );
-		cur_object = &(*cur_object)->next;
+EMSCRIPTEN_KEEPALIVE
+void draw_objects( double *list, int size ){
+
+	for( int i = 0; i < size; i+=3 ){
+		draw_object( list[i], list[i+1], list[i+2] );
+		//printf("%f - %f - %f\n", list[i], list[i+1], list[i+2]);
 	}
 }
 

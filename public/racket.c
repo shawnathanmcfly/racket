@@ -44,6 +44,7 @@ void main_loop(){
 	{
 		player_x += cos( rot) * -20;
 		player_y += sin( rot) * -20;
+
 	}
 
 	/* Clear Screen */
@@ -56,9 +57,8 @@ void main_loop(){
 	SDL_RenderFillRect( renderer, &clear );
 
 	cast_rays();
-
-	draw_objects();
-
+	player_data_to_server( player_x, player_y, rot );
+	player_data_from_server();
 	SDL_RenderPresent( renderer );
 }
 
@@ -66,31 +66,12 @@ int main( int argc, char *argv[] ){
 
 	graphics_init();
 
+	player_data_to_server( player_x, player_y, rot );
+	player_data_from_server();
+
 	//
 	//point main loop function to emscripten
-	//
-
-	load_object( 0, 600, 600, 0.42, 2, bad );
-	load_object( 0, 600, 700, 0.42, 2, bad );
-	load_object( 0, 600, 800, 0.42, 2, bad );
-	load_object( 0, 600, 900, 0.42, 2, bad );
-	load_object( 0, 600, 1000, 0.42, 2, bad );
-	load_object( 0, 600, 1100, 0.42, 2, bad );
-	load_object( 0, 600, 1200, 0.42, 2, bad );
-	load_object( 0, 600, 1300, 0.42, 2, bad );
-	load_object( 0, 800, 600, 0.42, 2, bad );
-	load_object( 0, 800, 700, 0.42, 2, bad );
-	load_object( 0, 800, 800, 0.42, 2, bad );
-	load_object( 0, 800, 900, 0.42, 2, bad );
-	load_object( 0, 800, 1000, 0.42, 2, bad );
-	load_object( 0, 800, 1100, 0.42, 2, bad );
-	load_object( 0, 800, 1200, 0.42, 2, bad );
-	load_object( 0, 800, 1300, 0.42, 2, bad );
-
-
 	emscripten_set_main_loop( main_loop, -1, 1 );
-
-	destroy_objects();
 
 	graphics_rem();
 

@@ -18,7 +18,7 @@ module.exports = {
   ],
 
   getPlayers : function(){
-    console.log( this.players );
+    return this.players;
   },
 
   randomNewbName: function(){

@@ -10,10 +10,14 @@ module.exports = (app) => {
 
     stats.players.push(req.body);
 
-    stats.getPlayers();
 
     res.json(req.body);
 
+  })
+
+  app.get( "/data", (req, res) => {
+
+    res.json( stats.players );
   })
 
   app.post("/signoff", (req, res) => {
