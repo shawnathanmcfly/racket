@@ -47,19 +47,18 @@ void main_loop(){
 
 	}
 
-	/* Clear Screen */
+	/* Clear Screen
 	SDL_Rect clear;
 	clear.x = 0;
 	clear.y = 0;
 	clear.w = 640;
 	clear.h = 480;
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-	SDL_RenderFillRect( renderer, &clear );
-
-	cast_rays();
+	SDL_RenderFillRect( renderer, &clear );*/
 
 	player_data_from_server();
 	SDL_RenderPresent( renderer );
+
 }
 
 int main( int argc, char *argv[] ){
@@ -71,7 +70,7 @@ int main( int argc, char *argv[] ){
 
 	//
 	//point main loop function to emscripten
-	emscripten_set_main_loop( main_loop, 30, 1 );
+	emscripten_set_main_loop( main_loop, -1, 1 );
 
 	graphics_rem();
 

@@ -130,6 +130,7 @@ void cast_ray( double offset, int col_pos ){
 	}
 }
 
+EMSCRIPTEN_KEEPALIVE
 void cast_rays( ){
 	traceCnt = 0;
 	//right half of view
