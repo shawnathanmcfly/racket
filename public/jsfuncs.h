@@ -11,8 +11,8 @@ EM_JS( void, player_data_from_server, (), {
 
 });
 
-EM_JS( void, player_data_to_server, (double x, double y, double r), {
-  getPlayerStat( x, y, r );
+EM_JS( void, player_data_to_server, (double x, double y, double r, int st), {
+  getPlayerStat( x, y, r, st );
 });
 
 

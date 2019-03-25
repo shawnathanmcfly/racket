@@ -47,5 +47,7 @@ module.exports = {
         console.log( playername + " left the server." );
       }
     }
+
+    consle.log( stats.players );
   }
 }
