@@ -24,8 +24,7 @@ function getPlayerData(){
     var buff;
 
     for( let i in data ){
-      if( data[i].name === playerName )
-        continue;
+      
       arr[i*3] = data[i].x;
       arr[i*3+1] = data[i].y;
       arr[i*3+2] = data[i].r;
