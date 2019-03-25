@@ -36,6 +36,7 @@ module.exports = {
       }
     }while( found )
 
+
     return select;
   },
 
@@ -48,6 +49,6 @@ module.exports = {
       }
     }
 
-    consle.log( stats.players );
+    
   }
 }

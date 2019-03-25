@@ -10,6 +10,11 @@ module.exports = (app) => {
 
     stats.players.push(req.body);
 
+    console.log( "*ONLINE PLAYERS*" );
+    for( let i in stats.players ){
+      console.log( stats.players[i] );
+    }
+
     res.json(req.body);
 
   })
