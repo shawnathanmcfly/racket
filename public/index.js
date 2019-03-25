@@ -1,17 +1,20 @@
 var playerName = "";
 
 //getPlayerStat is called from C to control frame rate
-function getPlayerStat( x, y, r ){
+function getPlayerStat( x, y, r, st ){
   return(
-    $.post("/", { x: x, y: y, r: r }, function(data){
+    //////////////////////////////////
+    //NOTE: ST is dummy for testing!!!!!
+    /////////////////////////////////---|
+    $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
         playerName = data.name;
     })
   )
 }
 
-function sendPlayerData( x, y, r ){
+function sendPlayerData( x, y, r, st ){
   return(
-    $.post("/data", {x:x, y:y, r:r, name:playerName }, function(data){
+    $.post("/data", {x:x, y:y, r:r, st: st, name:playerName }, function(data){
 
     })
   )
@@ -20,19 +23,20 @@ function sendPlayerData( x, y, r ){
 function getPlayerData(){
   $.get("/data", function(data){
 
-    const arr = new Float64Array( data.length * 3 );
-    var buff;
+    const arr = new Float64Array( data.length * 4 );
+    let buff;
 
     for( let i in data ){
-      arr[i*3] = data[i].x;
-      arr[i*3+1] = data[i].y;
-      arr[i*3+2] = data[i].r;
+      arr[i*4] = data[i].x;
+      arr[i*4+1] = data[i].y;
+      arr[i*4+2] = data[i].r;
+      arr[i*4+3] = data[i].st;
     }
 
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
     Module._cast_rays();
-    Module._draw_objects( buff, arr.length );
+    Module._draw_sprites( buff, arr.length );
     Module._free( buff );
   })
 }
@@ -43,6 +47,10 @@ $(
 
     $.post("/signoff", { name: playerName });
 
+
+  },
+
+  onload = function(){
 
   }
 )

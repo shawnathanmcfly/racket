@@ -3,13 +3,6 @@
 
 #define PI  3.14159265358979323846264338327950288
 
-//*********************************
-//****** GLOBAL VALUES ************
-//*********************************
-//Sorry, big no no
-double wallTrace[320];
-int traceCnt = 0;
-
 //Cast ray in selected position
 void cast_ray( double offset, int col_pos ){
 

@@ -5,8 +5,9 @@
 #include <SDL2/SDL.h>
 #include "jsfuncs.h"
 #include "player.h"
-#include "objects.h"
 #include "graphics.h"
+#include "sprites.h"
+#include "objects.h"
 #include "map.h"
 #include "ray.h"
 
@@ -65,6 +66,7 @@ void main_loop(){
 int main( int argc, char *argv[] ){
 
 	graphics_init();
+	load_sprites();
 
 	player_data_to_server( player_x, player_y, rot );
 	player_data_from_server();
@@ -74,6 +76,7 @@ int main( int argc, char *argv[] ){
 	emscripten_set_main_loop( main_loop, -1, 1 );
 
 	graphics_rem();
+	dest_sprites();
 
   return 0;
 }
