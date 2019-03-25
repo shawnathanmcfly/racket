@@ -20,20 +20,19 @@ function sendPlayerData( x, y, r ){
 function getPlayerData(){
   $.get("/data", function(data){
 
-    const arr = new Float64Array( (data.length - 1) * 3 );
+    const arr = new Float64Array( data.length * 3 );
     var buff;
 
     for( let i in data ){
-      
       arr[i*3] = data[i].x;
       arr[i*3+1] = data[i].y;
       arr[i*3+2] = data[i].r;
     }
 
-    buff = Module._malloc( (arr.length - 1) * arr.BYTES_PER_ELEMENT );
+    buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
     Module._cast_rays();
-    Module._draw_objects( buff, (arr.length - 1) );
+    Module._draw_objects( buff, arr.length );
     Module._free( buff );
   })
 }
