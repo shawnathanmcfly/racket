@@ -1,18 +1,20 @@
 var playerName = "";
 
 //getPlayerStat is called from C to control frame rate
-function getPlayerStat( x, y, r, st ){
+function getPlayerStat( x, y, r ){
   return(
     //////////////////////////////////
     //NOTE: ST is dummy for testing!!!!!
     /////////////////////////////////---|
     $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
         playerName = data.name;
+        $("title").html(playerName);
+
     })
   )
 }
 
-function sendPlayerData( x, y, r, st ){
+function sendPlayerData( x, y, r ){
   return(
     $.post("/data", {x:x, y:y, r:r, st: st, name:playerName }, function(data){
 
