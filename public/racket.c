@@ -47,6 +47,11 @@ void main_loop(){
 		player_y += sin( rot) * -20;
 
 	}
+	if( currentKeyStates[ SDL_SCANCODE_G ] )
+	{
+		print_players();
+
+	}
 
 	/* Clear Screen
 	SDL_Rect clear;
@@ -66,8 +71,6 @@ void main_loop(){
 int main( int argc, char *argv[] ){
 
 	player_data_to_server( player_x, player_y, rot );
-
-	SDL_Delay( 2000 );
 
 	graphics_init();
 	load_sprites();

@@ -43,6 +43,12 @@ function getPlayerData(){
   })
 }
 
+function printPlayers(){
+  $.get('/log', function(data){
+    console.log( data );
+  })
+}
+
 //page initial loading
 $(
   onunload = function(){

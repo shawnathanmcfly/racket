@@ -45,4 +45,8 @@ module.exports = (app) => {
     res.end();
 
   })
+
+  app.get('/log', (req, res) => {
+    res.json( stats.players );
+  })
 }

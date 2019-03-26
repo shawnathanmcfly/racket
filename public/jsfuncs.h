@@ -15,5 +15,9 @@ EM_JS( void, player_data_to_server, (double x, double y, double r ), {
   getPlayerStat( x, y, r );
 });
 
+EM_JS( void, print_players, (), {
+  printPlayers();
+});
+
 
 #endif
