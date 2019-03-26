@@ -46,6 +46,7 @@ function getPlayerData(){
 function printPlayers(){
   $.get('/log', function(data){
     console.log( data );
+    console.log( "ME CLIENT SIDE: " + playerName );
   })
 }
 
