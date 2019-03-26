@@ -52,14 +52,10 @@ function printPlayers(){
 
 //page initial loading
 $(
-  onunload = function(){
+  window.addEventListener('beforeunload', function (e) {
 
+    e.preventDefault();
     $.post("/signoff", { name: playerName });
-
-
-  },
-
-  onload = function(){
-
-  }
+    e.returnValue = '';
+  })
 )
