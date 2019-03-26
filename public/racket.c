@@ -56,7 +56,7 @@ void main_loop(){
 	clear.h = 480;
 	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
 	SDL_RenderFillRect( renderer, &clear );*/
-	
+
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
 	SDL_RenderPresent( renderer );
@@ -65,10 +65,12 @@ void main_loop(){
 
 int main( int argc, char *argv[] ){
 
+	player_data_to_server( player_x, player_y, rot );
+
+	SDL_Delay( 2000 );
+
 	graphics_init();
 	load_sprites();
-
-	player_data_to_server( player_x, player_y, rot );
 
 	//
 	//point main loop function to emscripten
