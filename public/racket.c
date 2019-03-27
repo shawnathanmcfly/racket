@@ -38,29 +38,26 @@ void main_loop(){
 	}
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
-		player_x += cos( rot) * 15;
-		player_y += sin( rot) * 15;
+
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * 45) / CUBE_SIZE ] < 1 )
+			player_x += cos( rot) * 15;
+
+		if( level[(int)(player_y + sin( rot ) * 45) / 200 ][ (int)player_x / 200 ] < 1 )
+			player_y += sin( rot) * 15;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 	{
-		player_x += cos( rot) * -15;
-		player_y += sin( rot) * -15;
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * -45) / CUBE_SIZE ] < 1 )
+			player_x += cos( rot) * -15;
+
+		if( level[(int)(player_y + sin( rot ) * -45) / 200 ][ (int)player_x / 200 ] < 1 )
+			player_y += sin( rot) * -15;
 
 	}
 	if( currentKeyStates[ SDL_SCANCODE_G ] )
 	{
 		print_players();
-
 	}
-
-	/* Clear Screen
-	SDL_Rect clear;
-	clear.x = 0;
-	clear.y = 0;
-	clear.w = 640;
-	clear.h = 480;
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xff);
-	SDL_RenderFillRect( renderer, &clear );*/
 
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
