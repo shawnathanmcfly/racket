@@ -65,7 +65,6 @@ void main_loop(){
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
 	SDL_RenderPresent( renderer );
-
 }
 
 int main( int argc, char *argv[] ){

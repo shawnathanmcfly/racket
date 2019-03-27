@@ -89,11 +89,11 @@ void cast_ray( double offset, int col_pos ){
 	src.h = CUBE_SIZE;
 	if( vl < hl ){
 
-		wallTrace[traceCnt] = vl;
-
 		dest.h = (int)CUBE_SIZE / floor( vl * (cos( (offset - rot) - PI / 1080 )) ) * 577;
 		dest.y = 240 - dest.h / 2;
 		src.x = vh;
+
+    wallTrace[traceCnt] = vl;
 
 		if( vc == 1 )
 			SDL_RenderCopy( renderer, brick, &src, &dest);
@@ -125,21 +125,19 @@ void cast_ray( double offset, int col_pos ){
 
 EMSCRIPTEN_KEEPALIVE
 void cast_rays( ){
-	traceCnt = 0;
 	//right half of view
 	double offset = 0, dist;
 	int slice = 640 / 2;
-
+  traceCnt = 320 / 2;
 	for( int i = 0; i < 160; i++, offset += 3.14 / 1080, slice += 2, traceCnt++ )
 		cast_ray( rot + offset, slice );
 
 	/*left check of view*/
 	offset = -1 * 3.14 / 1080;
 	slice = 640 / 2;
-	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2, traceCnt++ )
+  traceCnt = 320 / 2;
+	for( int i = 0; i < 160; i++, offset -= 1 * 3.14 / 1080, slice -= 2, traceCnt-- )
 		cast_ray( rot + offset, slice );
-
-	traceCnt = 0;
 
 }
 

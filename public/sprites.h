@@ -39,11 +39,8 @@ void dest_sprites(){
     free( sprite_list[i] );
 }
 
-void draw_sprite( double x, double y, double r, int st ){
-	double d, object_angle, player_angle;
-
-	d = sqrt( (player_x - x) * (player_x - x) +
-		(player_y - y) * (player_y - y) );
+void draw_sprite( double x, double y, double r, double d, int st ){
+	double object_angle, player_angle;
 
   dest.w = sprite_list[st]->w / d * 577;
 	dest.h = sprite_list[st]->h / d * 577;
@@ -63,18 +60,24 @@ void draw_sprite( double x, double y, double r, int st ){
 	}
 
 	dest.x = ((640 / 2) - (dest.w/2)) + (object_angle - player_angle) * 12;
-	dest.y = 240 - (sprite_list[st]->h / d);
+	dest.y = (240 + ( 200 / d * 577) / 2 ) - dest.h;
 
-	//printf("object drawing");
-	SDL_RenderCopy( renderer, sprite_list[st]->t, NULL, &dest);
+  //src.x = 0;
+  //src.y = 0;
+  //src.w = 2;
+  //src.h = sprite_list[st]->h;
+	//for( int i = 0; i < dest.w; i++, src.x += 2 )
+    if( wallTrace[dest.x / 2] > d )
+      SDL_RenderCopy( renderer, sprite_list[st]->t, NULL, &dest);
+
 }
 
 EMSCRIPTEN_KEEPALIVE
 void draw_sprites( double *list, int size ){
 
-	for( int i = 0; i < size; i+=4 ){
+	for( int i = 0; i < size; i+=5 ){
 		//printf("%f - %f - %f\n", list[i], list[i+1], list[i+2]);
-		draw_sprite( list[i], list[i+1], list[i+2], list[i+3] );
+		draw_sprite( list[i], list[i+1], list[i+2], list[i+3], list[i+4] );
 
 	}
 }

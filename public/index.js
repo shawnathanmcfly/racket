@@ -25,14 +25,31 @@ function sendPlayerData( x, y, r ){
 function getPlayerData(){
   $.get("/data", function(data){
 
-    const arr = new Float64Array( data.length * 4 );
+    //set typed array to pass to C function
+    const arr = new Float64Array( data.length * 5 );
     let buff;
 
+    //add distance to player from objects in server
     for( let i in data ){
-      arr[i*4] = data[i].x;
-      arr[i*4+1] = data[i].y;
-      arr[i*4+2] = data[i].r;
-      arr[i*4+3] = data[i].st;
+      data[i].d = Module._get_dist(
+        Module._get_player_x(), Module._get_player_y(),
+        data[i].x, data[i].y
+      );
+    }
+
+    //Sort objects for ordered drawing
+    const mappedPlayers = Object.keys(data).map( i => data[i] )
+      .sort(function (a, b) {
+          return b.d - a.d;
+      });
+
+
+    for( let i = 0; i < mappedPlayers.length; i++ ){
+      arr[i*5] = mappedPlayers[i].x;
+      arr[i*5+1] = mappedPlayers[i].y;
+      arr[i*5+2] = mappedPlayers[i].r;
+      arr[i*5+3] = mappedPlayers[i].d;
+      arr[i*5+4] = mappedPlayers[i].st;
     }
 
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
