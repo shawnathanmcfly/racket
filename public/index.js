@@ -26,8 +26,16 @@ function getPlayerData(){
   $.get("/data", function(data){
 
     //set typed array to pass to C function
-    const arr = new Float64Array( data.length * 5 );
+    const arr = new Float64Array( (data.length - 1) * 5 );
     let buff;
+
+    //splice yourself from list, no need to render your own sprite
+    for( let i in data ){
+      if( data[i].name === playerName ){
+        delete data[i];
+        break;
+      }
+    }
 
     //add distance to player from objects in server
     for( let i in data ){
@@ -43,8 +51,8 @@ function getPlayerData(){
           return b.d - a.d;
       });
 
-
     for( let i = 0; i < mappedPlayers.length; i++ ){
+
       arr[i*5] = mappedPlayers[i].x;
       arr[i*5+1] = mappedPlayers[i].y;
       arr[i*5+2] = mappedPlayers[i].r;

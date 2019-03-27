@@ -26,25 +26,25 @@ void main_loop(){
 	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
 	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
 	{
-		rot += 3 * 3.14 / 180;
+		rot += 2 * 3.14 / 180;
 		if( rot > 6.28 )
 			rot = 0;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
 	{
-		rot += -(3 * 3.14 / 180);
+		rot += -(2 * 3.14 / 180);
 		if( rot < 0 )
 			rot = 6.28;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
-		player_x += cos( rot) * 20;
-		player_y += sin( rot) * 20;
+		player_x += cos( rot) * 15;
+		player_y += sin( rot) * 15;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 	{
-		player_x += cos( rot) * -20;
-		player_y += sin( rot) * -20;
+		player_x += cos( rot) * -15;
+		player_y += sin( rot) * -15;
 
 	}
 	if( currentKeyStates[ SDL_SCANCODE_G ] )

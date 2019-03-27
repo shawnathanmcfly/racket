@@ -67,7 +67,7 @@ void draw_sprite( double x, double y, double r, double d, int st ){
   //src.w = 2;
   //src.h = sprite_list[st]->h;
 	//for( int i = 0; i < dest.w; i++, src.x += 2 )
-    if( wallTrace[dest.x / 2] > d )
+    //if( wallTrace[dest.x / 2] > d )
       SDL_RenderCopy( renderer, sprite_list[st]->t, NULL, &dest);
 
 }
