@@ -60,6 +60,7 @@ function getPlayerData(){
       arr[i*5+4] = mappedPlayers[i].st;
     }
 
+    //allocate space in virtual heap for pointer algorithm in C
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
     Module._cast_rays();
@@ -75,7 +76,7 @@ function printPlayers(){
   })
 }
 
-var unloadHandler = function(){
+function playerLogoff(){
 
 	$.ajax( {
     type: 'post',
@@ -83,21 +84,13 @@ var unloadHandler = function(){
 		data: {
       name: playerName
 		},
-		error: function () {
-
-		},
-		success: function ( data ) {
-
-		},
 		url: '/signoff'
-	} );
-
+	});
 }
 
 $(
-
   window.addEventListener( "unload", function (e) {
 
-		unloadHandler();
+		playerLogoff();
 	})
 )

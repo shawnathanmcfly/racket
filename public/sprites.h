@@ -41,6 +41,7 @@ void dest_sprites(){
 
 void draw_sprite( double x, double y, double r, double d, int st ){
 	double object_angle, player_angle;
+  int adjust = 0, lt = 0;
 
   dest.w = sprite_list[st]->w / d * 577;
 	dest.h = sprite_list[st]->h / d * 577;
@@ -62,13 +63,31 @@ void draw_sprite( double x, double y, double r, double d, int st ){
 	dest.x = ((640 / 2) - (dest.w/2)) + (object_angle - player_angle) * 12;
 	dest.y = (240 + ( 200 / d * 577) / 2 ) - dest.h;
 
-  //src.x = 0;
-  //src.y = 0;
-  //src.w = 2;
-  //src.h = sprite_list[st]->h;
-	//for( int i = 0; i < dest.w; i++, src.x += 2 )
-    //if( wallTrace[dest.x / 2] > d )
-      SDL_RenderCopy( renderer, sprite_list[st]->t, NULL, &dest);
+  src.x = 0;
+  src.y = 0;
+  src.h = sprite_list[st]->h;
+
+  if( wallTrace[ dest.x / 2 ] < d )
+    lt = 1;
+
+  for( int i = 0; i < dest.w / 2; i++ )
+    if( wallTrace[ dest.x / 2 + i ] > d ||
+        dest.x / 2 + i > 320 )
+      adjust += 2;
+
+  src.w = sprite_list[st]->w;
+  if( adjust < dest.w ){
+    src.w -= sprite_list[st]->w - (adjust * d / 577);
+
+    if( lt ){
+      src.x = sprite_list[st]->w - src.w;
+      dest.x += dest.w - adjust;
+    }
+  }
+
+  dest.w = adjust;
+
+  SDL_RenderCopy( renderer, sprite_list[st]->t, &src, &dest);
 
 }
 

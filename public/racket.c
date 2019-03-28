@@ -35,22 +35,22 @@ void main_loop(){
 		rot += -(2 * 3.14 / 180);
 		if( rot < 0 )
 			rot = 6.28;
-	\
+	}
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
 
-		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * 45) / CUBE_SIZE ] < 1 )
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * 55) / CUBE_SIZE ] < 1 )
 			player_x += cos( rot) * 15;
 
-		if( level[(int)(player_y + sin( rot ) * 45) / 200 ][ (int)player_x / 200 ] < 1 )
+		if( level[(int)(player_y + sin( rot ) * 55) / 200 ][ (int)player_x / 200 ] < 1 )
 			player_y += sin( rot) * 15;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 	{
-		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * -45) / CUBE_SIZE ] < 1 )
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * -55) / CUBE_SIZE ] < 1 )
 			player_x += cos( rot) * -15;
 
-		if( level[(int)(player_y + sin( rot ) * -45) / 200 ][ (int)player_x / 200 ] < 1 )
+		if( level[(int)(player_y + sin( rot ) * -55) / 200 ][ (int)player_x / 200 ] < 1 )
 			player_y += sin( rot) * -15;
 
 	}
