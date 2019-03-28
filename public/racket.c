@@ -35,7 +35,7 @@ void main_loop(){
 		rot += -(2 * 3.14 / 180);
 		if( rot < 0 )
 			rot = 6.28;
-	}
+	\
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
 

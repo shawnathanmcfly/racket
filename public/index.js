@@ -75,12 +75,29 @@ function printPlayers(){
   })
 }
 
-//page initial loading
-$(
-  window.addEventListener('beforeunload', function (e) {
+var unloadHandler = function(){
 
-    e.preventDefault();
-    $.post("/signoff", { name: playerName });
-    e.returnValue = '';
-  })
+	$.ajax( {
+    type: 'post',
+		async: false,
+		data: {
+      name: playerName
+		},
+		error: function () {
+
+		},
+		success: function ( data ) {
+
+		},
+		url: '/signoff'
+	} );
+
+}
+
+$(
+
+  window.addEventListener( "unload", function (e) {
+
+		unloadHandler();
+	})
 )
