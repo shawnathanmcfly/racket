@@ -3,7 +3,7 @@ module.exports = {
 
   players : [],
 
-  chat: [{ user: 'DickLick2000', msg: 'I hate you'}],
+  chat: [],
 
   newbNames: [
       "Newbard Dreyfuss",
