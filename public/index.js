@@ -76,6 +76,14 @@ function printPlayers(){
   })
 }
 
+function getChat(){
+  $.get('/chat', function(data){
+      for( let i in data ){
+        $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
+      }
+  });
+}
+
 function playerLogoff(){
 
 	$.ajax( {
@@ -93,4 +101,5 @@ $(
 
 		playerLogoff();
 	})
+
 )

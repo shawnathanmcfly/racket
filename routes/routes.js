@@ -42,8 +42,12 @@ module.exports = (app) => {
   app.post("/signoff", (req, res) => {
 
     stats.playerLeave( req.body.name );
-    res.end();
 
+
+  })
+
+  app.get('/chat', (req, res) => {
+    res.json( stats.chat );
   })
 
   app.get('/log', (req, res) => {

@@ -19,5 +19,18 @@ EM_JS( void, print_players, (), {
   printPlayers();
 });
 
+EM_JS( void, send_char, ( char c ), {
+  if( c == 8 ){
+    $("#f-send-msg").text(function (_,txt) {
+      return txt.slice(0, -1);
+    });
+  }else
+    $("#f-send-msg").append(String.fromCharCode(c));
+})
+
+EM_JS( void, list_chat, (), {
+  getChat();
+})
+
 
 #endif

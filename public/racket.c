@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "jsfuncs.h"
 #include "player.h"
 #include "graphics.h"
@@ -11,7 +12,7 @@
 #include "map.h"
 #include "ray.h"
 
-unsigned short quit = 0;
+unsigned short quit = 0, type_mode = 0;
 
 //
 //Main loop for EMSCRIPTEN to use in browser SDL_Window
@@ -20,8 +21,15 @@ void main_loop(){
 
 	SDL_Event e;
 
-	while( SDL_PollEvent( &e ) != 0 )
-		;
+	while( SDL_PollEvent( &e ) != 0 ){
+		if( type_mode ){
+			if( e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_BACKSPACE ){
+				send_char( 8 );
+			}else if( e.type == SDL_TEXTINPUT ){
+				send_char( *e.text.text );
+			}
+		}
+	}
 
 	const unsigned char *currentKeyStates = SDL_GetKeyboardState( NULL );
 	if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
@@ -58,6 +66,19 @@ void main_loop(){
 	{
 		print_players();
 	}
+	if( currentKeyStates[ SDL_SCANCODE_T ] ){
+		type_mode = 1;
+		printf("Started type mode\n");
+		SDL_StartTextInput();
+	}
+	if( currentKeyStates[ SDL_SCANCODE_RETURN ] ){
+		if( type_mode ){
+			type_mode = 0;
+			printf("Stopped type mode\n");
+			SDL_StopTextInput();
+
+		}
+	}
 
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
@@ -70,6 +91,8 @@ int main( int argc, char *argv[] ){
 
 	graphics_init();
 	load_sprites();
+
+	list_chat();
 
 	//
 	//point main loop function to emscripten

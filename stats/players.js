@@ -3,6 +3,8 @@ module.exports = {
 
   players : [],
 
+  chat: [{ user: 'DickLick2000', msg: 'I hate you'}],
+
   newbNames: [
       "Newbard Dreyfuss",
       "Sir Spanks Alot",
@@ -49,6 +51,6 @@ module.exports = {
       }
     }
 
-    
+
   }
 }
