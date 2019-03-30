@@ -50,6 +50,12 @@ module.exports = (app) => {
     res.json( stats.chat );
   })
 
+  app.post('/chat', (req, res) => {
+    stats.chat.push( req.body );
+    console.log( stats.chat );
+    res.sendStatus(200);
+  })
+
   app.get('/log', (req, res) => {
     res.json( stats.players );
   })

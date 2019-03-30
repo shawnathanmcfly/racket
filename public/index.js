@@ -78,10 +78,21 @@ function printPlayers(){
 
 function getChat(){
   $.get('/chat', function(data){
+    $("#f-main").empty();
       for( let i in data ){
         $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
       }
   });
+}
+
+function sendChat(){
+  $.post('/chat', {
+    user: playerName,
+    msg: $("#f-send-msg").text()
+  } ,function(data){
+    $("#f-send-msg").empty();
+    getChat();
+  })
 }
 
 function playerLogoff(){

@@ -68,14 +68,13 @@ void main_loop(){
 	}
 	if( currentKeyStates[ SDL_SCANCODE_T ] ){
 		type_mode = 1;
-		printf("Started type mode\n");
 		SDL_StartTextInput();
 	}
 	if( currentKeyStates[ SDL_SCANCODE_RETURN ] ){
 		if( type_mode ){
 			type_mode = 0;
-			printf("Stopped type mode\n");
 			SDL_StopTextInput();
+			send_msg();
 
 		}
 	}
