@@ -81,6 +81,7 @@ void main_loop(){
 	}
 
 	player_data_from_server();
+	process_flags();
 	send_player_data( player_x, player_y, rot );
 	SDL_RenderPresent( renderer );
 }

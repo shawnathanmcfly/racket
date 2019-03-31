@@ -46,8 +46,6 @@ function getPlayerData(){
       }
     }
 
-    processFlags();
-
     //add distance to player from objects in server
     for( let i in data ){
       data[i].d = Module._get_dist(
@@ -101,7 +99,6 @@ function getChat(){
 function getNewChat(){
   $.ajax( {
     type: 'post',
-    async: false,
     data: {
       user: playerName
     },
