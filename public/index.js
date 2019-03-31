@@ -46,7 +46,7 @@ function getPlayerData(){
       }
     }
 
-
+    processFlags();
 
     //add distance to player from objects in server
     for( let i in data ){
@@ -74,7 +74,6 @@ function getPlayerData(){
     //allocate space in virtual heap for pointer algorithm in C
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
-    processFlags();
     Module._cast_rays();
     Module._draw_sprites( buff, arr.length );
     Module._process_gui();
@@ -104,7 +103,6 @@ function getNewChat(){
     type: 'get',
 		url: '/newchat',
     success: function(data){
-      resetFlag( gameFlags & 0xFFFFFFFE );
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
     }
 	});
@@ -119,6 +117,8 @@ function resetFlag( flag ){
 function processFlags(){
     //Bit one set, new global chat message to render
     if( gameFlags & 1 ){
+      gameFlags = 0;
+      resetFlag( gameFlags & 0xFFFFFFFE );
       getNewChat();
 
     }
