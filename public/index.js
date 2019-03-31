@@ -104,6 +104,7 @@ function getNewChat(){
     type: 'get',
 		url: '/newchat',
     success: function(data){
+      resetFlag( gameFlags & 0xFFFFFFFE );
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
     }
 	});
@@ -119,7 +120,7 @@ function processFlags(){
     //Bit one set, new global chat message to render
     if( gameFlags & 1 ){
       getNewChat();
-      resetFlag( gameFlags & 0xFFFFFFFE );
+
     }
 }
 
