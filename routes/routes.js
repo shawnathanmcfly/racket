@@ -51,7 +51,7 @@ module.exports = (app) => {
     res.json( stats.chat );
   })
 
-  app.get('/newchat', (req, res) => {
+  app.post('/newchat', (req, res) => {
     for( let i in stats.players ){
 
       if( stats.players[i].name === req.body.user ){
