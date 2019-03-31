@@ -103,7 +103,7 @@ function getNewChat(){
     type: 'get',
     data: {
       user: playerName
-    }
+    },
 		url: '/newchat',
     success: function(data){
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
