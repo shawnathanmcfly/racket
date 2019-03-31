@@ -5,7 +5,7 @@ module.exports = (app) => {
     app.post("/", (req, res) => {
 
     req.body.name = stats.randomNewbName();
-    req.body.gf = 0;
+    req.body.lc = 0;
 
     console.log( req.body.name + " joined the game!" );
 
@@ -26,18 +26,26 @@ module.exports = (app) => {
   })
 
   app.post( "/data", (req, res) => {
-
+    let newMsgs;
     for( let i in stats.players ){
 
       if( stats.players[i].name === req.body.name ){
         stats.players[i].x = req.body.x;
         stats.players[i].y = req.body.y;
         stats.players[i].r = req.body.r;
+
+        if( stats.players[i].lc < stats.chat.length ){
+
+          newMsgs = stats.chat.slice( stats.players[i].lc );
+          console.log( newMsgs );
+          stats.players[i].lc += stats.chat.length - stats.players[i].lc;
+          res.send( newMsgs );
+        }else
+          res.json(0);
+
         break;
       }
     }
-
-    res.end();
   });
 
   app.post("/signoff", (req, res) => {
@@ -47,33 +55,9 @@ module.exports = (app) => {
 
   })
 
-  app.get('/chat', (req, res) => {
-    res.json( stats.chat );
-  })
-
-  app.get('/flags/:user', (req, res) => {
-
-    for( let i in stats.players ){
-
-      if( stats.players[i].name === req.params.user ){
-
-        if( stats.players[i].gf != 0 ){
-          stats.players[i].gf = 0;
-          console.log( "RECIEVEDD MSG: " + stats.players[i].gf );
-          res.json( stats.chat[ stats.chat.length - 1 ] );
-        }else
-          res.json(0);
-
-        break;
-      }
-    }
-
-  })
-
-
   app.post('/chat', (req, res) => {
     stats.chat.push( req.body );
-    stats.setAllPlayerFlags( 1, req.body.user );
+
     res.sendStatus(200);
   })
 

@@ -25,7 +25,13 @@ function getPlayerStat( x, y, r ){
 function sendPlayerData( x, y, r ){
   return(
     $.post("/data", {x:x, y:y, r:r, name:playerName }, function(data){
-
+      console.log( data)
+      if( data  ){
+        for( let i in data ){
+          $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
+          console.log( data[i] );
+        }
+      }
     })
   )
 }
@@ -86,34 +92,11 @@ function printPlayers(){
   })
 }
 
-function getChat(){
-  $.get('/chat', function(data){
-    $("#f-main").empty();
-      for( let i in data ){
-        $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
-      }
-  });
-}
-
-function processFlags(){
-  $.ajax( {
-    type: 'get',
-		url: '/flags/' + playerName,
-    success: function(data){
-
-      if( data )
-        $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>");
-
-    }
-	});
-}
-
 function sendChat(){
   $.post('/chat', {
     user: playerName,
     msg: $("#f-send-msg").text()
   } ,function(data){
-    $('#f-main').append( "<p>" + playerName + ": " + $("#f-send-msg").text() + "</p>")
     $("#f-send-msg").empty();
 
   })

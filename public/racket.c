@@ -83,7 +83,6 @@ void main_loop(){
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
 	SDL_RenderPresent( renderer );
-	process_flags();
 }
 
 int main( int argc, char *argv[] ){
@@ -93,7 +92,6 @@ int main( int argc, char *argv[] ){
 	graphics_init();
 	load_sprites();
 	load_gui_sprites();
-	list_chat();
 
 	//
 	//point main loop function to emscripten

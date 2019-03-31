@@ -30,10 +30,6 @@ EM_JS( void, send_msg, (), {
   sendChat();
 });
 
-EM_JS( void, process_flags, (), {
-  processFlags();
-})
-
 EM_JS( void, list_chat, (), {
   getChat();
 });
