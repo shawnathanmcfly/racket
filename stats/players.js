@@ -55,5 +55,13 @@ module.exports = {
       if( this.players[i].name != player )
         this.players[i].gf = this.players[i].gf | flag;
     }
+  },
+
+  resetAllPlayerFlags : function( flag, player ){
+    for( let i in this.players ){
+      if( this.players[i].name != player )
+        this.players[i].gf = 0;
+    }
   }
+
 }
