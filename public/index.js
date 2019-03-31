@@ -100,22 +100,20 @@ function getChat(){
 }
 
 function getNewChat(){
-  $.get('/newchat', function(data){
-    console.log( data );
+  $.ajax( {
+    type: 'get',
+		async: false,
+		url: '/newchat',
+    success: function(data){
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
-  });
+    }
+	});
 }
 
 function resetFlag( flag ){
-  $.ajax( {
-    type: 'post',
-		async: false,
-		data: {
-      user: playerName,
-      flag: flag
-		},
-		url: '/resetflag'
-	});
+  $.post('/resetflag', { user: playerName, flag: flag }, function(data){
+
+  })
 }
 
 function processFlags(){
