@@ -107,9 +107,15 @@ function getNewChat(){
 }
 
 function resetFlag( flag ){
-  $.post('/resetflag', { user: playerName, flag: flag }, function(data){
-
-  })
+  $.ajax( {
+    type: 'post',
+		async: false,
+		data: {
+      user: playerName,
+      flag: flag
+		},
+		url: '/resetflag'
+	});
 }
 
 function processFlags(){
