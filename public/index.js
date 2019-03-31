@@ -40,7 +40,6 @@ function getPlayerData(){
     //splice yourself from list, no need to render your own sprite
     for( let i in data ){
       if( data[i].name === playerName ){
-        gameFlags = data[i].gf;
         delete data[i];
         break;
       }
@@ -96,25 +95,20 @@ function getChat(){
   });
 }
 
-function getNewChat(){
+function processFlags(){
   $.ajax( {
     type: 'post',
     data: {
       user: playerName
     },
-		url: '/newchat',
+		url: '/flags',
     success: function(data){
-      $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
+
+      if( data )
+        $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>");
+      
     }
 	});
-}
-
-function processFlags(){
-    //Bit one set, new global chat message to render
-    if( gameFlags & 1 ){
-      getNewChat();
-
-    }
 }
 
 function sendChat(){

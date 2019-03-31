@@ -51,17 +51,22 @@ module.exports = (app) => {
     res.json( stats.chat );
   })
 
-  app.post('/newchat', (req, res) => {
+  app.post('/flags', (req, res) => {
     for( let i in stats.players ){
 
       if( stats.players[i].name === req.body.user ){
-        stats.players[i].gf = 0;
-        console.log( "GAME FLAG RESET: " + stats.players[i].gf );
+
+        if( stats.players[i].gf != 0 ){
+          stats.players[i].gf = 0;
+          console.log( "RECIEVEDD MSG: " + stats.players[i].gf );
+          res.json( stats.chat[ stats.chat.length - 1 ] );
+        }else
+          res.json(0);
 
         break;
       }
     }
-    res.json( stats.chat[ stats.chat.length - 1 ] );
+
   })
 
 
