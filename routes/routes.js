@@ -37,7 +37,7 @@ module.exports = (app) => {
         if( stats.players[i].lc < stats.chat.length ){
 
           newMsgs = stats.chat.slice( stats.players[i].lc );
-          console.log( newMsgs );
+      
           stats.players[i].lc += stats.chat.length - stats.players[i].lc;
           res.send( newMsgs );
         }else

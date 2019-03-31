@@ -29,7 +29,7 @@ function sendPlayerData( x, y, r ){
       if( data  ){
         for( let i in data ){
           $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
-          console.log( data[i] );
+          
         }
       }
     })
