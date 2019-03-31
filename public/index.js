@@ -97,16 +97,13 @@ function getChat(){
 
 function processFlags(){
   $.ajax( {
-    type: 'post',
-    data: {
-      user: playerName
-    },
-		url: '/flags',
+    type: 'get',
+		url: '/flags/' + playerName,
     success: function(data){
 
       if( data )
         $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>");
-      
+
     }
 	});
 }

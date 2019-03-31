@@ -51,10 +51,11 @@ module.exports = (app) => {
     res.json( stats.chat );
   })
 
-  app.post('/flags', (req, res) => {
+  app.get('/flags/:user', (req, res) => {
+
     for( let i in stats.players ){
 
-      if( stats.players[i].name === req.body.user ){
+      if( stats.players[i].name === req.params.user ){
 
         if( stats.players[i].gf != 0 ){
           stats.players[i].gf = 0;
