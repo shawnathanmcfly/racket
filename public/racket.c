@@ -95,7 +95,7 @@ int main( int argc, char *argv[] ){
 
 	//
 	//point main loop function to emscripten
-	emscripten_set_main_loop( main_loop, -1, 1 );
+	emscripten_set_main_loop( main_loop, 60, 1 );
 
 	graphics_rem();
 	dest_sprites();
