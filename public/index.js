@@ -101,6 +101,7 @@ function getChat(){
 function getNewChat(){
   $.ajax( {
     type: 'post',
+    async: false,
     data: {
       user: playerName
     },

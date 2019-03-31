@@ -57,6 +57,7 @@ module.exports = (app) => {
       if( stats.players[i].name === req.body.user ){
         stats.players[i].gf = 0;
         console.log( "GAME FLAG RESET: " + stats.players[i].gf );
+
         break;
       }
     }
