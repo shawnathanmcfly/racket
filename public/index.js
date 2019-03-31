@@ -25,11 +25,10 @@ function getPlayerStat( x, y, r ){
 function sendPlayerData( x, y, r ){
   return(
     $.post("/data", {x:x, y:y, r:r, name:playerName }, function(data){
-      console.log( data)
       if( data  ){
         for( let i in data ){
           $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
-          
+
         }
       }
     })
