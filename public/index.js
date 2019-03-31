@@ -105,6 +105,7 @@ function getNewChat(){
 		async: false,
 		url: '/newchat',
     success: function(data){
+      gameFlags = 0;
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
     }
 	});
