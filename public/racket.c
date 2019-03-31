@@ -8,11 +8,12 @@
 #include "player.h"
 #include "graphics.h"
 #include "sprites.h"
+#include "gui.h"
 #include "objects.h"
 #include "map.h"
 #include "ray.h"
 
-unsigned short quit = 0, type_mode = 0;
+unsigned short quit = 0;
 
 //
 //Main loop for EMSCRIPTEN to use in browser SDL_Window
@@ -47,19 +48,19 @@ void main_loop(){
 	if( currentKeyStates[ SDL_SCANCODE_UP ] )
 	{
 
-		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * 55) / CUBE_SIZE ] < 1 )
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * 100) / CUBE_SIZE ] < 1 )
 			player_x += cos( rot) * 15;
 
-		if( level[(int)(player_y + sin( rot ) * 55) / 200 ][ (int)player_x / 200 ] < 1 )
+		if( level[(int)(player_y + sin( rot ) * 100) / 200 ][ (int)player_x / 200 ] < 1 )
 			player_y += sin( rot) * 15;
 	}
 	if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
 	{
-		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * -55) / CUBE_SIZE ] < 1 )
-			player_x += cos( rot) * -15;
+		if( level[(int)player_y / CUBE_SIZE][ (int)(player_x + cos( rot ) * -100) / CUBE_SIZE ] < 1 )
+			player_x += cos( rot) * -100;
 
 		if( level[(int)(player_y + sin( rot ) * -55) / 200 ][ (int)player_x / 200 ] < 1 )
-			player_y += sin( rot) * -15;
+			player_y += sin( rot) * -100;
 
 	}
 	if( currentKeyStates[ SDL_SCANCODE_G ] )
@@ -90,7 +91,7 @@ int main( int argc, char *argv[] ){
 
 	graphics_init();
 	load_sprites();
-
+	load_gui_sprites();
 	list_chat();
 
 	//
@@ -99,6 +100,7 @@ int main( int argc, char *argv[] ){
 
 	graphics_rem();
 	dest_sprites();
+	dest_gui_sprites();
 
   return 0;
 }

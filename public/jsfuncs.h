@@ -6,10 +6,7 @@ EM_JS( void, send_player_data, (double x, double y, double r ), {
 })
 
 EM_JS( void, player_data_from_server, (), {
-
   getPlayerData();
-  getChat();
-
 });
 
 EM_JS( void, player_data_to_server, (double x, double y, double r ), {
@@ -27,15 +24,15 @@ EM_JS( void, send_char, ( char c ), {
     });
   }else
     $("#f-send-msg").append(String.fromCharCode(c));
-})
+});
 
 EM_JS( void, send_msg, (), {
   sendChat();
-})
+});
 
 EM_JS( void, list_chat, (), {
   getChat();
-})
+});
 
 
 #endif

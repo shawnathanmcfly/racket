@@ -5,6 +5,7 @@ module.exports = (app) => {
     app.post("/", (req, res) => {
 
     req.body.name = stats.randomNewbName();
+    req.body.gf = 0;
 
     console.log( req.body.name + " joined the game!" );
 
@@ -50,9 +51,28 @@ module.exports = (app) => {
     res.json( stats.chat );
   })
 
+  app.get('/newchat', (req, res) => {
+    res.json( stats.chat[ stats.chat.length - 1 ] );
+  })
+
+  app.post('/resetflag', (req, res) => {
+    console.log( "restting " + req.body.user );
+    for( let i in stats.players ){
+
+      if( stats.players[i].name === req.body.user ){
+        stats.players[i].gf = 0;
+        console.log( "GAME FLAG RESET: " + stats.players[i].gf );
+        break;
+      }
+    }
+
+    res.end();
+  })
+
   app.post('/chat', (req, res) => {
     stats.chat.push( req.body );
-    console.log( stats.chat );
+    stats.setAllPlayerFlags( 1, req.body.user );
+    console.log( stats.players );
     res.sendStatus(200);
   })
 

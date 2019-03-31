@@ -46,7 +46,8 @@ var fMain = new Vue({
       height: "320px",
       color: "white",
       marginTop: "10px",
-      padding: "10px"
+      padding: "10px",
+      overflow: "auto"
     }
   }
 });

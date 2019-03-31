@@ -1,4 +1,13 @@
-var playerName = "";
+var playerName = "", gameFlags = 0;
+
+/*
+    Game Flags - Binary Packed Data for less
+                 data transfering. Below are
+                 the codes in hex.
+
+    0x01 = New global chat message
+*/
+
 
 //getPlayerStat is called from C to control frame rate
 function getPlayerStat( x, y, r ){
@@ -9,7 +18,6 @@ function getPlayerStat( x, y, r ){
     $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
         playerName = data.name;
         $("title").html(playerName);
-
     })
   )
 }
@@ -32,10 +40,13 @@ function getPlayerData(){
     //splice yourself from list, no need to render your own sprite
     for( let i in data ){
       if( data[i].name === playerName ){
+        gameFlags = data[i].gf;
         delete data[i];
         break;
       }
     }
+
+
 
     //add distance to player from objects in server
     for( let i in data ){
@@ -63,9 +74,12 @@ function getPlayerData(){
     //allocate space in virtual heap for pointer algorithm in C
     buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
     Module.HEAPF64.set( arr, buff >> 3 );
+    processFlags();
     Module._cast_rays();
     Module._draw_sprites( buff, arr.length );
+    Module._process_gui();
     Module._free( buff );
+
   })
 }
 
@@ -85,13 +99,35 @@ function getChat(){
   });
 }
 
+function getNewChat(){
+  $.get('/newchat', function(data){
+    console.log( data );
+      $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
+  });
+}
+
+function resetFlag( flag ){
+  $.post('/resetflag', { user: playerName, flag: flag }, function(data){
+
+  })
+}
+
+function processFlags(){
+    //Bit one set, new global chat message to render
+    if( gameFlags & 1 ){
+      getNewChat();
+      resetFlag( gameFlags & 0xFFFFFFFE );
+    }
+}
+
 function sendChat(){
   $.post('/chat', {
     user: playerName,
     msg: $("#f-send-msg").text()
   } ,function(data){
+    $('#f-main').append( "<p>" + playerName + ": " + $("#f-send-msg").text() + "</p>")
     $("#f-send-msg").empty();
-    getChat();
+
   })
 }
 

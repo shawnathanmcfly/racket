@@ -38,19 +38,22 @@ module.exports = {
       }
     }while( found )
 
-
     return select;
   },
 
   playerLeave : function(playername){
-
     for( let i in this.players ){
       if( this.players[i].name === playername ){
         this.players.splice( i, 1 );
         console.log( playername + " left the server." );
       }
     }
+  },
 
-
+  setAllPlayerFlags : function( flag, player ){
+    for( let i in this.players ){
+      if( this.players[i].name != player )
+        this.players[i].gf = this.players[i].gf | flag;
+    }
   }
 }

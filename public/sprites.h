@@ -95,7 +95,7 @@ EMSCRIPTEN_KEEPALIVE
 void draw_sprites( double *list, int size ){
 
 	for( int i = 0; i < size; i+=5 ){
-		//printf("%f - %f - %f\n", list[i], list[i+1], list[i+2]);
+
 		draw_sprite( list[i], list[i+1], list[i+2], list[i+3], list[i+4] );
 
 	}
