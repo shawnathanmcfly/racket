@@ -72,7 +72,8 @@ module.exports = (app) => {
   app.post('/chat', (req, res) => {
     stats.chat.push( req.body );
     stats.setAllPlayerFlags( 1, req.body.user );
-    stats.resetAllPlayerFlags( 1, req.body.user );
+    setTimeout(function(){ stats.resetAllPlayerFlags( 0, req.body.user ); }, 50);
+    stats.resetAllPlayerFlags( 0, req.body.user );
     console.log( stats.players );
     res.sendStatus(200);
   })
