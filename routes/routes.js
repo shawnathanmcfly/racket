@@ -52,11 +52,6 @@ module.exports = (app) => {
   })
 
   app.get('/newchat', (req, res) => {
-    res.json( stats.chat[ stats.chat.length - 1 ] );
-  })
-
-  app.post('/resetflag', (req, res) => {
-    console.log( "restting " + req.body.user );
     for( let i in stats.players ){
 
       if( stats.players[i].name === req.body.user ){
@@ -65,9 +60,9 @@ module.exports = (app) => {
         break;
       }
     }
-
-    res.end();
+    res.json( stats.chat[ stats.chat.length - 1 ] );
   })
+
 
   app.post('/chat', (req, res) => {
     stats.chat.push( req.body );

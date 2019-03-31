@@ -101,6 +101,9 @@ function getChat(){
 function getNewChat(){
   $.ajax( {
     type: 'get',
+    data: {
+      user: playerName
+    }
 		url: '/newchat',
     success: function(data){
       $('#f-main').append( "<p>" + data.user + ": " + data.msg + "</p>")
@@ -108,17 +111,9 @@ function getNewChat(){
 	});
 }
 
-function resetFlag( flag ){
-  $.post('/resetflag', { user: playerName, flag: flag }, function(data){
-
-  })
-}
-
 function processFlags(){
     //Bit one set, new global chat message to render
     if( gameFlags & 1 ){
-      gameFlags = 0;
-      resetFlag( gameFlags & 0xFFFFFFFE );
       getNewChat();
 
     }
