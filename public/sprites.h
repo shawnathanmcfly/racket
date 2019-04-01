@@ -10,7 +10,15 @@ typedef struct {
   int w, h;
 }Sprite;
 
+struct Hitscan{
+  int w, x;
+}hitscan;
+
+//hit detection for each player
+
 Sprite *sprite_list[1];
+int *hitscan_list = 0;
+int hitscan_size = 0;
 
 Sprite *load_sprite( char *s){
 
@@ -39,7 +47,8 @@ void dest_sprites(){
     free( sprite_list[i] );
 }
 
-void draw_sprite( double x, double y, double r, double d, int st ){
+struct Hitscan draw_sprite( double x, double y, double r, double d, int st ){
+  struct Hitscan h;
 	double object_angle, player_angle;
   int adjust = 0, lt = 0;
 
@@ -89,16 +98,36 @@ void draw_sprite( double x, double y, double r, double d, int st ){
 
   SDL_RenderCopy( renderer, sprite_list[st]->t, &src, &dest);
 
+  h.x = dest.x;
+  h.w = dest.w;
+
+  return h;
 }
 
 EMSCRIPTEN_KEEPALIVE
 void draw_sprites( double *list, int size ){
 
-	for( int i = 0; i < size; i+=5 ){
+  if( size ){
+    if( hitscan_list )
+      free( hitscan_list );
 
-		draw_sprite( list[i], list[i+1], list[i+2], list[i+3], list[i+4] );
+    hitscan_size = (int)(size / 2);
+    hitscan_list = ( int *)malloc( hitscan_size );
+  }
+
+	for( int i = 0; i < size; i+=6 ){
+
+		hitscan = draw_sprite( list[i], list[i+1], list[i+2], list[i+3], list[i+4] );
+    hitscan_list[i*3] = (int)list[i+5];
+    hitscan_list[i*3+1] = hitscan.x;
+    hitscan_list[i*3+2] = hitscan.w;
 
 	}
+
+  //make list of sprites in firing range starting from reverse order
+
+
+  free( list );
 }
 
 #endif

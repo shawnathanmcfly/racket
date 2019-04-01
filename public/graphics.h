@@ -42,7 +42,7 @@ SDL_Texture *load_texture( char *path ){
 
 int graphics_init(){
 
-	SDL_Init(SDL_INIT_VIDEO);
+	SDL_Init(SDL_INIT_VIDEO );
 	window = SDL_CreateWindow(
         "RACKET",
         SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,

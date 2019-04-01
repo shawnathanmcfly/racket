@@ -34,5 +34,9 @@ EM_JS( void, list_chat, (), {
   getChat();
 });
 
+EM_JS( void, send_hit, ( int id, int dam ), {
+  sendHit( id, dam );
+})
+
 
 #endif

@@ -5,6 +5,8 @@ module.exports = {
 
   chat: [],
 
+  pList: {},
+
   newbNames: [
       "Newbard Dreyfuss",
       "Sir Spanks Alot",
@@ -24,7 +26,7 @@ module.exports = {
   },
 
   randomNewbName: function(){
-    let select, found = true;
+    let select, found = true, playerId;
 
     do{
       select = this.newbNames[ Math.floor((Math.random() * this.newbNames.length ))];
@@ -36,9 +38,23 @@ module.exports = {
             found = true;
         }
       }
+    }while( found );
+
+    //assign in game id
+    found = true;
+    do{
+      playerId = Math.floor((Math.random() * 1000000 ));
+      found = false;
+
+      if( this.players.length > 0 ){
+        for( let i in this.players ){
+          if( playerId === this.players[i].id )
+            found = true;
+        }
+      }
     }while( found )
 
-    return select;
+    return { id: playerId, sel: select };
   },
 
   playerLeave : function(playername){
@@ -48,13 +64,5 @@ module.exports = {
         console.log( playername + " left the server." );
       }
     }
-  },
-
-  setAllPlayerFlags : function( flag, player ){
-    for( let i in this.players ){
-      if( this.players[i].name != player )
-        this.players[i].gf = this.players[i].gf | flag;
-    }
   }
-
 }

@@ -3,11 +3,15 @@ var stats = require('../stats/players');
 module.exports = (app) => {
 
     app.post("/", (req, res) => {
-
-    req.body.name = stats.randomNewbName();
+    let t;
+    t = stats.randomNewbName();
+    req.body.name = t.sel;
+    req.body.id = t.id;
     req.body.lc = 0;
 
-    console.log( req.body.name + " joined the game!" );
+    stats.pList[t.id] = { dam: 0 };
+
+    stats.chat.push({ user:"-", msg: req.body.name + " joined the game!" })
 
     stats.players.push(req.body);
 
@@ -20,9 +24,12 @@ module.exports = (app) => {
 
   })
 
-  app.get( "/data", (req, res) => {
-
-    res.json( stats.players );
+  app.get( "/data/:pid", (req, res) => {
+    let pd, dam;
+    pd = stats.players;
+    dam = stats.pList[req.params.pid].dam;
+    stats.pList[req.params.pid].dam = 0;
+    res.json( {pd: pd, dam:dam} );
   })
 
   app.post( "/data", (req, res) => {
@@ -37,11 +44,11 @@ module.exports = (app) => {
         if( stats.players[i].lc < stats.chat.length ){
 
           newMsgs = stats.chat.slice( stats.players[i].lc );
-      
+
           stats.players[i].lc += stats.chat.length - stats.players[i].lc;
           res.send( newMsgs );
         }else
-          res.json(0);
+          res.end();
 
         break;
       }
@@ -49,10 +56,9 @@ module.exports = (app) => {
   });
 
   app.post("/signoff", (req, res) => {
-
+    stats.chat.push({ user: "", msg: "" + req.body.name + " left the game!"})
     stats.playerLeave( req.body.name );
-
-
+    res.end();
   })
 
   app.post('/chat', (req, res) => {
@@ -63,5 +69,10 @@ module.exports = (app) => {
 
   app.get('/log', (req, res) => {
     res.json( stats.players );
+  })
+
+  app.post("/hit", (req, res) => {
+    stats.pList[req.body.id].dam = req.body.dam;
+    res.end();
   })
 }

@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include "jsfuncs.h"
 #include "player.h"
+#include "sound.h"
 #include "graphics.h"
 #include "sprites.h"
 #include "gui.h"
@@ -13,7 +14,7 @@
 #include "map.h"
 #include "ray.h"
 
-unsigned short quit = 0;
+int gun_rest = 0;
 
 //
 //Main loop for EMSCRIPTEN to use in browser SDL_Window
@@ -71,6 +72,23 @@ void main_loop(){
 		type_mode = 1;
 		SDL_StartTextInput();
 	}
+	if( currentKeyStates[ SDL_SCANCODE_SPACE ] && !gun_rest ){
+		play_sound( SND_PISTOL );
+		gun_rest = 10;
+
+		for( int i = hitscan_size - 3; i >= 0 && hitscan_list; i-=3 ){
+			//printf("Hit Player ID: %d X: %d W: %d\n",
+				//hitscan_list[i], hitscan_list[i+1], hitscan_list[i+2] );
+			if( hitscan_list[i+1] < 640 / 2 &&
+				hitscan_list[i+1] + hitscan_list[i+2] > 640 / 2){
+
+					send_hit( hitscan_list[i], 1 );
+				}
+		}
+	}
+	if( currentKeyStates[ SDL_SCANCODE_BACKSLASH ] ){
+		sound_control(0);
+	}
 	if( currentKeyStates[ SDL_SCANCODE_RETURN ] ){
 		if( type_mode ){
 			type_mode = 0;
@@ -79,6 +97,9 @@ void main_loop(){
 
 		}
 	}
+
+	if( gun_rest )
+		gun_rest--;
 
 	player_data_from_server();
 	send_player_data( player_x, player_y, rot );
@@ -98,6 +119,7 @@ int main( int argc, char *argv[] ){
 	emscripten_set_main_loop( main_loop, 60, 1 );
 
 	graphics_rem();
+	sound_control(1);
 	dest_sprites();
 	dest_gui_sprites();
 

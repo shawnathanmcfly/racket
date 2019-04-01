@@ -51,3 +51,22 @@ var fMain = new Vue({
     }
   }
 });
+
+var fGui = new Vue({
+  el: "#f-gui",
+  data:{
+    show: true,
+    view: 'f-gui',
+    styleDat: {
+      backgroundColor: "black",
+      float: "left",
+      width: "100%",
+      height: "480px",
+      color: "white",
+      padding: "10px",
+      fontFamily: "'Anton', sans-serif",
+      borderRadius: "8px 8px 8px 8px",
+      textAlign: "center"
+    }
+  }
+});
