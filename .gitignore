@@ -1,4 +1,4 @@
 node_modules
-public/images
-*.h
-*.h
+public/images/
+public/*.h
+public/*.h
