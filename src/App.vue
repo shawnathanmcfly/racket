@@ -1,5 +1,5 @@
 <template>
-  <script type="application/javascript" src="a.out.js"></script>
+  <script type="application/javascript" src="./racket/a.out.js"></script>
   <script>
     Module({
       canvas: (() => document.getElementById("canvas"))()
