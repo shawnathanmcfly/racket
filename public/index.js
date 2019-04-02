@@ -11,6 +11,7 @@ function getPlayerStat( x, y, r ){
         pid = data.id;
         $("title").html(playerName);
         $("#f-gui").append("<p>HEALTH</p><p id='health'>" + health + "</p>");
+        $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
     })
   )
 }
@@ -28,6 +29,7 @@ function sendPlayerData( x, y, r ){
         for( let i in data ){
           $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
         }
+        $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
       }
     })
   )
@@ -92,7 +94,7 @@ function getPlayerData(){
 function printPlayers(){
   $.get('/log', function(data){
     console.log( data );
-    
+
   })
 }
 
@@ -102,6 +104,7 @@ function sendChat(){
     msg: $("#f-send-msg").text()
   } ,function(data){
     $("#f-send-msg").empty();
+    $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
   })
 }
 

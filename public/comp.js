@@ -29,6 +29,7 @@ var sendMsg = new Vue({
       borderRadius: "0px 0px 8px 8px",
       fontFamily: "'Anton', sans-serif",
       padding: "15px 5px 15px 5px",
+      textOverflow: "ellipsis",
       marginTop: "10px"
     }
   }
