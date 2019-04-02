@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+    <script src="index.js"></script>
+    <script src="a.out.js"></script>
+    <script src="racket.js"></script>
+  </head>
+  <body>
+    <container>
+      <div class="row">
+        <div class="col-3 ml-2">
+          <div id="f-nav" v-bind:style="styleDat">
+            <div>
+              <a href="#">chat</a>
+              <a href="#">login</a>
+            </div>
+          </div>
+          <div id="f-main" v-bind:style="styleDat">
+
+          </div>
+          <div id="f-send-msg" v-bind:style="styleDat">
+
+          </div>
+        </div>
+        <div class="col-2 p-0">
+          <div id="f-gui" v-bind:style="styleDat">
+            
+          </div>
+        </div>
+        <div class="col-6 ml-1">
+          <canvas width="640" height="480"></canvas>
+        </div>
+
+      </div>
+    </container>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="comp.js"></script>
+  </body>
+</html>

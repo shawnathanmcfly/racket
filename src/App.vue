@@ -1,6 +1,14 @@
 <template>
+  <script type="application/javascript" src="a.out.js"></script>
+  <script>
+    Module({
+      canvas: (() => document.getElementById("canvas"))()
+    }).then( () => {
+      console.log( "Racket Loaded Successfully!" )
+    })
+  </script>
   <div id="app">
-    <img src="./assets/logo.png">
+    <canvas></canvas>
     <HelloWorld/>
   </div>
 </template>
