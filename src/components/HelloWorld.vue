@@ -1,6 +1,14 @@
 <template>
+  <script type="application/javascript" src="./racket/a.out.js"></script>
+  <script>
+    Module({
+      canvas: (() => document.getElementById("canvas"))()
+    }).then( () => {
+      console.log( "Racket Loaded Successfully!" )
+    })
+</script>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <canvas width="640" height="480"></canvas>
 
   </div>
 </template>
