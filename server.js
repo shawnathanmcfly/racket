@@ -6,7 +6,6 @@ app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(serveStatic(__dirname + "/dist"));
-require('routes.js')(app);
 var port = process.env.PORT || 8080;
 app.listen(port);
 console.log('server started '+ port);
