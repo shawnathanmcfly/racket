@@ -1,4 +1,5 @@
 <template>
+  <script type="javascript" src="./racket/index.js"></script>
   <script type="application/javascript" src="./racket/a.out.js"></script>
   <script>
     Module({
