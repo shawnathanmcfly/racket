@@ -1,11 +1,19 @@
-// server.js
-var express = require('express');
-var path = require('path');
-var serveStatic = require('serve-static');
-app = express();
+const express = require('express');
+const path = require('path');
+const app = express();
+const PORT = process.env.PORT || 8080;
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(serveStatic(__dirname + "/dist"));
-var port = process.env.PORT || 8080;
-app.listen(port);
-console.log('server started '+ port);
+
+app.use( express.static("public"));
+
+require( __dirname + '/routes/routes.js')(app);
+
+
+app.listen( PORT, () => {
+
+    console.log('App listening on: ' + PORT + "!" );
+
+
+});

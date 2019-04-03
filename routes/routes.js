@@ -1,4 +1,4 @@
-var stats = require('./players');
+var stats = require('../stats/players');
 
 module.exports = (app) => {
 
