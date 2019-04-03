@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <canvas></canvas>
     <HelloWorld/>
   </div>
 </template>
