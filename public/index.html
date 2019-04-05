@@ -19,9 +19,13 @@
               <a @click='currentTab = "chat-window"' href="#">chat</a>
               <a @click='currentTab = "login-window"' href="#">login</a>
               <a @click='currentTab = "register-window"' href="#">signup</a>
-              <keep-alive>
-                <component :is='currentTab'></component>
-              </keep-alive>
+
+                <transition name="component-fade" mode="out-in">
+                  <keep-alive>
+                  <component :is='currentTab'></component>
+                  </keep-alive>
+                </transition>
+
             </div>
           </div>
         </div>
