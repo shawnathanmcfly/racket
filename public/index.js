@@ -1,4 +1,4 @@
-var playerName = "", pid = 0, health = 100;
+var playerName = "", pid = 0, health = 0;
 
 //getPlayerStat is called from C to control frame rate
 function getPlayerStat( x, y, r ){
@@ -9,6 +9,7 @@ function getPlayerStat( x, y, r ){
     $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
         playerName = data.name;
         pid = data.id;
+        health = data.dam;
         $("title").html(playerName);
         $("#f-gui").append("<p>HEALTH</p><p id='health'>" + health + "</p>");
         $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
@@ -24,7 +25,7 @@ function sendHit( id, dam ){
 
 function sendPlayerData( x, y, r ){
   return(
-    $.post("/data", {x:x, y:y, r:r, name:playerName }, function(data){
+    $.post("/data", {x:x, y:y, r:r, id:pid }, function(data){
       if( data ){
         for( let i in data ){
           $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
@@ -37,19 +38,18 @@ function sendPlayerData( x, y, r ){
 
 function getPlayerData(){
   return(
-    $.get("/data/" + pid, function(stuff){
-      let data = stuff.pd;
-      health -= stuff.dam;
-
-      $("#health").text( ""+health );
-
+    $.get("/data", function(data){
       //set typed array to pass to C function
+      //negate 1 to skip yourself from rendering
       const arr = new Float64Array( (data.length - 1) * 6 );
       let buff;
 
       //splice yourself from list, no need to render your own sprite
+      //also grab your health data and update on your end
       for( let i in data ){
-        if( data[i].name === playerName ){
+        if( data[i].id == pid ){
+          health = data[i].dam;
+          $("#health").text( ""+health );
           delete data[i];
           break;
         }
@@ -94,7 +94,6 @@ function getPlayerData(){
 function printPlayers(){
   $.get('/log', function(data){
     console.log( data );
-
   })
 }
 
@@ -114,7 +113,7 @@ function playerLogoff(){
     type: 'post',
 		async: false,
 		data: {
-      name: playerName
+      user: playerName
 		},
 		url: '/signoff'
 	});
@@ -123,8 +122,78 @@ function playerLogoff(){
 $(
 
   window.addEventListener( "unload", function (e) {
-
 		playerLogoff();
-	})
+	}),
+
+  $(document).on( "submit", "#sign-in", function(e){
+    e.preventDefault();
+    $.post('/signin', {
+        user: $("#user").val(),
+        pass: $("#pass").val(),
+        old: playerName
+      }, function( data ){
+        $("#error").val('');
+        if( !data ){
+          $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
+        }else
+          playerName = data.user.user;
+
+      })
+      $("#user").val(''),
+      $("#pass").val(''),
+      Module._type_mode_off();
+  }),
+
+  $(document).on( "submit", "#register", function(e){
+    e.preventDefault();
+
+    if( $("#sign-pass").val() === $("#sign-pass-conf").val() ){
+
+      $.post('/register', {
+          user: $("#sign-user").val(),
+          pass: $("#sign-pass").val(),
+          old: playerName
+        }, function( data ){
+
+          $("#register").find('#error').remove();
+
+          if( !data ){
+            $("#register").prepend("<p id='error'>That name taken nigga</p>");
+
+          }else{
+            playerName = data.user.user;
+
+          }
+        })
+
+      }else {
+        $("#register").prepend("<p id='error'>Passwords do no match</p>");
+      }
+
+    $("#sign-user").val('');
+    $("#sign-pass").val('');
+    $("#sign-pass-conf").val('');
+    Module._type_mode_off();
+  }),
+
+  $(document).on( "click", "#user", function(){
+    Module._set_location( 1 );
+  }),
+
+  $(document).on( "click", "#pass", function(){
+    Module._set_location( 2 );
+  }),
+
+  $(document).on( "click", "#sign-user", function(){
+    Module._set_location( 3 );
+  }),
+
+  $(document).on( "click", "#sign-pass", function(){
+    Module._set_location( 4 );
+  }),
+
+  $(document).on( "click", "#sign-pass-conf", function(){
+    Module._set_location( 5 );
+  })
 
 )

@@ -5,8 +5,6 @@ module.exports = {
 
   chat: [],
 
-  pList: {},
-
   newbNames: [
       "Newbard Dreyfuss",
       "Sir Spanks Alot",
@@ -57,12 +55,18 @@ module.exports = {
     return { id: playerId, sel: select };
   },
 
-  playerLeave : function(playername){
+  changeName : function(oldName, newName){
     for( let i in this.players ){
-      if( this.players[i].name === playername ){
-        this.players.splice( i, 1 );
-        console.log( playername + " left the server." );
+      if( this.players[i].name === oldName ){
+        this.players[i].name = newName;
       }
     }
+  },
+
+  playerLeave : function(playerName){
+    for( let i in this.players )
+      if( this.players[i].name === playerName )
+        this.players.splice( i, 1 );
+
   }
 }
