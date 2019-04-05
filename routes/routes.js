@@ -51,6 +51,7 @@ module.exports = (app) => {
         if(!user) return res.status(200).send(null);
         const  result  =  bcrypt.compareSync(pass, user.pass);
         if(!result) return  res.status(200).send(null);
+        stats.changeName( req.body.old, user );
         const  expiresIn  =  24  *  60  *  60;
         const  accessToken  =  jwt.sign({ id:  user.id }, process.env.SECRET_KEY, {
             expiresIn:  expiresIn
