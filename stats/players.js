@@ -64,6 +64,7 @@ module.exports = {
   },
 
   playerLeave : function(pn){
+    console.log( this.players );
     for( let i in this.players )
       if( this.players[i].name === pn )
         this.players.splice( i, 1 );

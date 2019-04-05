@@ -96,7 +96,7 @@ module.exports = (app) => {
 
   app.post("/signoff", (req, res) => {
     stats.playerLeave( req.body.name );
-    stats.chat.push({ user: ":::", msg: "" + req.body.user + " left the game!"})
+    stats.chat.push({ user: ":::", msg: "" + req.body.name + " left the game!"})
 
     res.end();
   })
