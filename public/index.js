@@ -136,8 +136,10 @@ $(
         $("#error").val('');
         if( !data ){
           $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
-        }else
-          playerName = data.user.user;
+        }else{
+          playerName = data.user;
+          
+        }
 
       })
       $("#user").val(''),

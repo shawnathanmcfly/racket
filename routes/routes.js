@@ -49,7 +49,7 @@ module.exports = (app) => {
     const pass = req.body.pass;
     Racket.findOne({ user: user }, function( err, data ){
         if(!data) return res.status(200).send(null);
-        const  result  =  bcrypt.compareSync(pass, user.pass);
+        const  result  =  bcrypt.compareSync(pass, data.pass);
         if(!result) return  res.status(200).send(null);
         stats.changeName( req.body.old, data.user );
         const  expiresIn  =  24  *  60  *  60;
