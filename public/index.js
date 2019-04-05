@@ -8,6 +8,7 @@ function getPlayerStat( x, y, r ){
     /////////////////////////////////---|
     $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
         playerName = data.name;
+        console.log( typeof data.id );
         pid = data.id;
         health = data.dam;
         $("title").html(playerName);
@@ -113,7 +114,7 @@ function playerLogoff(){
     type: 'post',
 		async: false,
 		data: {
-      id: pid
+      id: playerName
 		},
 		url: '/signoff'
 	});
