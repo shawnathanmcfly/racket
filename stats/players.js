@@ -63,9 +63,9 @@ module.exports = {
     }
   },
 
-  playerLeave : function(id){
+  playerLeave : function(pn){
     for( let i in this.players )
-      if( this.players[i].id == id )
+      if( this.players[i].name === pn )
         this.players.splice( i, 1 );
 
   }
