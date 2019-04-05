@@ -95,9 +95,9 @@ module.exports = (app) => {
   });
 
   app.post("/signoff", (req, res) => {
-    stats.playerLeave( req.body.user );
+    stats.playerLeave( req.body.pid );
     stats.chat.push({ user: ":::", msg: "" + req.body.user + " left the game!"})
-    
+
     res.end();
   })
 
