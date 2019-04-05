@@ -15,7 +15,7 @@
     "express": "^4.16.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.4.21",
-    "vue": "^2.6.10"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

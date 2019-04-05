@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io').listen(server);
 const mongoose = require('mongoose');
 const PORT = process.env.PORT || 8080;
 
@@ -11,7 +13,15 @@ app.use( express.static("public"));
 require( __dirname + '/routes/routes.js')(app);
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/racket";
 
-app.listen( PORT, () => {
+io.sockets.on('connection',(socket) => {
+   console.log( "Nigga connected" );
+
+   socket.on('disconnect', () => {
+      console.log("Nigga disconnected");
+   });
+});
+
+server.listen( PORT, () => {
 
     console.log('App listening on: ' + PORT + "!" );
     process.env.SECRET_KEY = "alu1ndra1";

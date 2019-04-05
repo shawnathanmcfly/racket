@@ -1,4 +1,4 @@
-var playerName = "", pid = 0, health = 0;
+var playerName = "", pid = 0, health = 0, socket;
 
 //getPlayerStat is called from C to control frame rate
 function getPlayerStat( x, y, r ){
@@ -122,6 +122,8 @@ function playerLogoff(){
 
 $(
 
+  socket = io.connect(),
+
   window.addEventListener( "unload", function (e) {
 		playerLogoff();
 	}),
@@ -138,7 +140,7 @@ $(
           $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
         }else{
           playerName = data.user;
-          
+
         }
 
       })
