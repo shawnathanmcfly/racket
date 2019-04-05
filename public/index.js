@@ -113,7 +113,7 @@ function playerLogoff(){
     type: 'post',
 		async: false,
 		data: {
-      user: playerName
+      id: playerName
 		},
 		url: '/signoff'
 	});
