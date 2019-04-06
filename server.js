@@ -4,6 +4,7 @@ const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(server);
 const mongoose = require('mongoose');
+var stats = require('./stats/players');
 const PORT = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: true }));
@@ -14,11 +15,39 @@ require( __dirname + '/routes/routes.js')(app);
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/racket";
 
 io.sockets.on('connection',(socket) => {
-   console.log( "Nigga connected" );
 
-   socket.on('disconnect', () => {
-      console.log("Nigga disconnected");
+   //Add player to server when connected
+   socket.on( 'add_player', function(data, cb){
+     let id = data.id;
+     delete data.id;
+     data.dam = 100;
+     data.name = stats.randomNewbName();
+     stats.players[ id ] = data;
+     socket.broadcast.emit( 'add_player', { id: id, data:data } );
+     cb(data);
    });
+
+   //update all clients on players postion and rotation
+   socket.on('player_coord', function(data){
+    stats.players[ socket.id ] = data;
+    socket.broadcast.emit('player_coord', { id:socket.id, data:data });
+   });
+
+   //send new message data to all clients. Including sending client.
+   socket.on('msg_update', function(data){
+     socket.emit('msg_update', data );
+   });
+
+   //remove instance of player from server.
+   //Also send notification of this for other
+   //players can delete the instance from
+   //client side data table
+   socket.on('disconnect', function(){
+     delete stats.players[socket.id];
+     io.emit( 'player_disconnect', socket.id )
+   });
+
+
 });
 
 server.listen( PORT, () => {

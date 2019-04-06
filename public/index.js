@@ -1,74 +1,46 @@
-var playerName = "", pid = 0, health = 0, socket;
-
-//getPlayerStat is called from C to control frame rate
-function getPlayerStat( x, y, r ){
-  return(
-    //////////////////////////////////
-    //NOTE: ST is dummy for testing!!!!!
-    /////////////////////////////////---|
-    $.post("/", { x: x, y: y, r: r, st: 0 }, function(data){
-        playerName = data.name;
-        console.log( typeof data.id );
-        pid = data.id;
-        health = data.dam;
-        $("title").html(playerName);
-        $("#f-gui").append("<p>HEALTH</p><p id='health'>" + health + "</p>");
-        $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
-    })
-  )
-}
+var socket, pList = {};
+var me;
 
 function sendHit( id, dam ){
-  $.post("/hit", { id: id, dam: dam }, function(data){
 
-  })
+}
+
+function sendMsg(){
+  if( $("#f-send-msg").val() === '' )
+    $("#f-send-msg").val("I'm sending empty string cuz I'm cool.");
+  socket.emit( 'msg_update', {name:me.name, msg:"Im gay" });
+  $("#f-send-msg").val('');
 }
 
 function sendPlayerData( x, y, r ){
-  return(
-    $.post("/data", {x:x, y:y, r:r, id:pid }, function(data){
-      if( data ){
-        for( let i in data ){
-          $('#f-main').append( "<p>" + data[i].user + ": " + data[i].msg + "</p>")
-        }
-        $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
-      }
-    })
-  )
+
+  me.x = x; me.y = y; me.r = r;
+  socket.emit( 'player_coord', me );
+  //$("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
 }
 
 function getPlayerData(){
-  return(
-    $.get("/data", function(data){
+
       //set typed array to pass to C function
       //negate 1 to skip yourself from rendering
-      const arr = new Float64Array( (data.length - 1) * 6 );
+      const arr = new Float64Array( Object.keys(pList).length * 6 );
       let buff;
 
-      //splice yourself from list, no need to render your own sprite
-      //also grab your health data and update on your end
-      for( let i in data ){
-        if( data[i].id == pid ){
-          health = data[i].dam;
-          $("#health").text( ""+health );
-          delete data[i];
-          break;
-        }
-      }
-
       //add distance to player from objects in server
-      for( let i in data ){
-        data[i].d = Module._get_dist(
+      for( let i in pList ){
+        pList[i].d = Module._get_dist(
           Module._get_player_x(), Module._get_player_y(),
-          data[i].x, data[i].y
+          pList[i].x, pList[i].y
         );
       }
 
       //Sort objects for ordered drawing
-      const mappedPlayers = Object.keys(data).map( i => data[i] )
+      const mappedPlayers = Object.keys(pList).map( i => pList[i] )
         .sort(function (a, b) {
             return b.d - a.d;
-        });
+      });
+
+      //console.log( mappedPlayers );
 
       for( let i = 0; i < mappedPlayers.length; i++ ){
 
@@ -77,7 +49,7 @@ function getPlayerData(){
         arr[i*6+2] = mappedPlayers[i].r;
         arr[i*6+3] = mappedPlayers[i].d;
         arr[i*6+4] = mappedPlayers[i].st;
-        arr[i*6+5] = mappedPlayers[i].id;
+        arr[i*6+5] = 0 //mappedPlayers[i].id;
       }
 
       //allocate space in virtual heap for pointer algorithm in C
@@ -88,45 +60,37 @@ function getPlayerData(){
       Module._process_gui();
       Module._free( buff );
 
-    })
-  )
-}
 
-function printPlayers(){
-  $.get('/log', function(data){
-    console.log( data );
-  })
-}
-
-function sendChat(){
-  $.post('/chat', {
-    user: playerName,
-    msg: $("#f-send-msg").text()
-  } ,function(data){
-    $("#f-send-msg").empty();
-    $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
-  })
-}
-
-function playerLogoff(){
-
-	$.ajax({
-    type: 'post',
-		async: false,
-		data: {
-      name: playerName
-		},
-		url: '/signoff'
-	});
 }
 
 $(
-
   socket = io.connect(),
 
-  window.addEventListener( "unload", function (e) {
-		playerLogoff();
-	}),
+  socket.on('connect', function() {
+    var pid = socket.id;
+    var newPlayer = { id: socket.id, name: "", st:0, x:600, y:600, r:3.12 }
+    socket.emit( 'add_player', newPlayer, function(data){
+      me = data;
+      $("#f-gui").append("<p>HEALTH</p><p id='health'>" + data.dam + "</p>");
+      $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
+    })
+  }),
+
+  socket.on( 'player_coord', function(data){
+    pList[ data.id ] = data.data;
+  }),
+
+  socket.on( 'add_player', function( data ){
+    pList[ data.id ] = data.data;
+  }),
+
+  socket.on( 'player_disconnect', function(data){
+    delete pList[data];
+  }),
+
+  socket.on( 'msg_update', function(data){
+    $("#f-main").append("<p style='color:yellow'>" + data.name + ": " + data.msg + "</p>");
+  }),
 
   $(document).on( "submit", "#sign-in", function(e){
     e.preventDefault();

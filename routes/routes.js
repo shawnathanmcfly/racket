@@ -4,45 +4,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 module.exports = (app) => {
-    app.post("/", (req, res) => {
-      let t = stats.randomNewbName();
+  app.post("/", (req, res) => {
 
-      req.body.name = t.sel;
-      req.body.id = t.id;
-      req.body.lc = 0;
-      req.body.dam = 100;
 
-      stats.chat.push({ user:":::", msg: req.body.name + " joined the game!" })
-      stats.players.push(req.body);
-
-      res.json(req.body);
-
-    })
-
-  app.get( "/data", (req, res) => {
-    res.send( stats.players );
   })
-
-  app.post( "/data", (req, res) => {
-    let newMsgs;
-    for( let i in stats.players ){
-      if( stats.players[i].id == req.body.id ){
-
-        stats.players[i].x = req.body.x;
-        stats.players[i].y = req.body.y;
-        stats.players[i].r = req.body.r;
-
-        if( stats.players[i].lc < stats.chat.length ){
-          newMsgs = stats.chat.slice( stats.players[i].lc );
-          stats.players[i].lc += stats.chat.length - stats.players[i].lc;
-          res.send( newMsgs );
-        }else
-          res.end();
-
-        break;
-      }
-    }
-  });
 
   app.post('/signin', (req, res) => {
     const user = req.body.user;
@@ -95,27 +60,4 @@ module.exports = (app) => {
     });
   });
 
-  app.post("/signoff", (req, res) => {
-    stats.playerLeave( req.body.name );
-    stats.chat.push({ user: ":::", msg: "" + req.body.name + " left the game!"})
-
-    res.end();
-  })
-
-  app.post('/chat', (req, res) => {
-    stats.chat.push( req.body );
-    res.sendStatus(200);
-  })
-
-  app.get('/log', (req, res) => {
-    res.json( stats.players );
-  })
-
-  app.post("/hit", (req, res) => {
-    for( let i in stats.players ){
-      if( stats.players[i].id == req.body.id )
-        stats.players[i].dam -= req.body.dam;
-    }
-    res.end();
-  })
 }
