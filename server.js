@@ -35,7 +35,7 @@ io.sockets.on('connection',(socket) => {
 
    //send new message data to all clients. Including sending client.
    socket.on('msg_update', function(data){
-     socket.emit('msg_update', data );
+     io.emit('msg_update', data );
    });
 
    //remove instance of player from server.
