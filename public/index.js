@@ -8,7 +8,7 @@ function sendHit( id, dam ){
 function sendMsg(){
   if( $("#f-send-msg").val() === '' )
     $("#f-send-msg").val("I'm sending empty string cuz I'm cool.");
-  socket.emit( 'msg_update', {name:me.name, msg:"Im gay" });
+  socket.emit( 'msg_update', {name:me.name, msg:$("#f-send-msg").val() });
   $("#f-send-msg").val('');
 }
 
