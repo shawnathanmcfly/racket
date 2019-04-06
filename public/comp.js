@@ -30,15 +30,15 @@ var registerWindow = Vue.component( 'register-window', {
   template:
     "<form id='register'>" +
       "<div class='form-group'>" +
-        "<label for='user'>Username:</label>" +
+        "<label for='sign-user'>Username:</label>" +
         "<input type='input' class='form-control' id='sign-user'>" +
       "</div>" +
       "<div class='form-group'>" +
-        "<label for='pass'>Password:</label>" +
+        "<label for='sign-pass'>Password:</label>" +
         "<input type='password' class='form-control' id='sign-pass'>" +
       "</div>" +
       "<div class='form-group'>" +
-        "<label for='pass-conf'>Confirm Password:</label>" +
+        "<label for='sign-pass-conf'>Confirm Password:</label>" +
         "<input type='password' class='form-control' id='sign-pass-conf'>" +
       "</div>" +
       "<button type='submit' class='btn btn-primary'>Submit</button>" +

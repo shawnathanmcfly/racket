@@ -97,16 +97,15 @@ $(
     $.post('/signin', {
         user: $("#user").val(),
         pass: $("#pass").val(),
-        old: playerName
+        old: me.name
       }, function( data ){
         $("#error").val('');
         if( !data ){
           $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
         }else{
-          playerName = data.user;
+          me.name = data.user;
 
         }
-
       })
       $("#user").val(''),
       $("#pass").val(''),
@@ -121,7 +120,7 @@ $(
       $.post('/register', {
           user: $("#sign-user").val(),
           pass: $("#sign-pass").val(),
-          old: playerName
+          old: me.name
         }, function( data ){
 
           $("#register").find('#error').remove();
@@ -129,20 +128,22 @@ $(
           if( !data ){
             $("#register").prepend("<p id='error'>That name taken nigga</p>");
 
-          }else{
-            playerName = data.user.user;
-
-          }
+          }else
+            me.name = data.user.user;
         })
 
-      }else {
+      }else
         $("#register").prepend("<p id='error'>Passwords do no match</p>");
-      }
+
 
     $("#sign-user").val('');
     $("#sign-pass").val('');
     $("#sign-pass-conf").val('');
     Module._type_mode_off();
+  }),
+
+  $(document).on( "click", "#f-send-msg", function(){
+    Module._set_location( 0 );
   }),
 
   $(document).on( "click", "#user", function(){
