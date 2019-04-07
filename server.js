@@ -44,10 +44,22 @@ io.sockets.on('connection',(socket) => {
    //client side data table
    socket.on('disconnect', function(){
      delete stats.players[socket.id];
-     io.emit( 'player_disconnect', socket.id )
+     io.emit( 'player_disconnect', socket.id );
    });
 
+   socket.on('send_hit', function(data){
+     socket.broadcast.emit( 'send_hit', data );
+   });
 
+   socket.on('play_sound', function(data){
+     io.emit( 'play_sound', data );
+   });
+
+   socket.on('change_sprite', function(data){
+     stats.players[ socket.id ].st = data.st;
+     data.id = socket.id;
+     socket.broadcast.emit( 'change_sprite', data );
+   });
 });
 
 server.listen( PORT, () => {

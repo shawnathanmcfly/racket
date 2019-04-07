@@ -1,8 +1,16 @@
-var socket, pList = {};
+var socket, pList = {}, hitList = {};
 var me;
 
-function sendHit( id, dam ){
+function sendHit(){
+  for( let i in hitList ){
+    if( hitList[i].x < 640 / 2 &&
+      hitList[i].x + hitList[i].w > 640 / 2)
+        socket.emit( 'send_hit', { id:hitList[i].id, dam:6 });
+  }
+}
 
+function changeSprite( sprNum ){
+  socket.emit( 'change_sprite', { st:sprNum });
 }
 
 function sendMsg(){
@@ -13,54 +21,49 @@ function sendMsg(){
 }
 
 function sendPlayerData( x, y, r ){
-
   me.x = x; me.y = y; me.r = r;
   socket.emit( 'player_coord', me );
-  //$("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
 }
 
 function getPlayerData(){
+    //add distance to player from objects in server
+    for( let i in pList ){
+      pList[i].id = i;
+      pList[i].d = Module._get_dist(
+        Module._get_player_x(), Module._get_player_y(),
+        pList[i].x, pList[i].y
+      );
+    }
 
-      //set typed array to pass to C function
-      //negate 1 to skip yourself from rendering
-      const arr = new Float64Array( Object.keys(pList).length * 6 );
-      let buff;
+    //Sort objects for ordered drawing
+    const mappedPlayers = Object.keys(pList).map( i => pList[i] )
+      .sort(function (a, b) {
+          return b.d - a.d;
+    });
 
-      //add distance to player from objects in server
-      for( let i in pList ){
-        pList[i].d = Module._get_dist(
-          Module._get_player_x(), Module._get_player_y(),
-          pList[i].x, pList[i].y
-        );
+    //cast rays
+    Module._cast_rays();
+
+    //Draw Sprites from furthest to closest.
+    //(Avoid overlapping)
+    for( let i = 0; i < mappedPlayers.length; i++ ){
+      let t;
+
+      t = Module._draw_sprite(
+        mappedPlayers[i].x,
+        mappedPlayers[i].y,
+        mappedPlayers[i].r,
+        mappedPlayers[i].d,
+        mappedPlayers[i].st
+      )
+
+      //Add sprite position to hit detection list
+      hitList[ mappedPlayers[i].id ] = {
+        x: Module._get_hit_x(t),
+        w: Module._get_hit_w(t)
       }
-
-      //Sort objects for ordered drawing
-      const mappedPlayers = Object.keys(pList).map( i => pList[i] )
-        .sort(function (a, b) {
-            return b.d - a.d;
-      });
-
-      //console.log( mappedPlayers );
-
-      for( let i = 0; i < mappedPlayers.length; i++ ){
-
-        arr[i*6] = mappedPlayers[i].x;
-        arr[i*6+1] = mappedPlayers[i].y;
-        arr[i*6+2] = mappedPlayers[i].r;
-        arr[i*6+3] = mappedPlayers[i].d;
-        arr[i*6+4] = mappedPlayers[i].st;
-        arr[i*6+5] = 0 //mappedPlayers[i].id;
-      }
-
-      //allocate space in virtual heap for pointer algorithm in C
-      buff = Module._malloc( arr.length * arr.BYTES_PER_ELEMENT );
-      Module.HEAPF64.set( arr, buff >> 3 );
-      Module._cast_rays();
-      Module._draw_sprites( buff, arr.length );
-      Module._process_gui();
-      Module._free( buff );
-
-
+    }
+    Module._process_gui();
 }
 
 $(
@@ -71,16 +74,28 @@ $(
     var newPlayer = { id: socket.id, name: "", st:0, x:600, y:600, r:3.12 }
     socket.emit( 'add_player', newPlayer, function(data){
       me = data;
-      $("#f-gui").append("<p>HEALTH</p><p id='health'>" + data.dam + "</p>");
+      $("#f-gui").append("<p>HEALTH</p><p id='health'>" + 100 + "</p>");
       $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
     })
+  }),
+
+  socket.on( 'send_hit', function(data){
+    if( data.id === me.id ){
+      me.dam -= data.dam;
+      if( me.dam <= 0 ){
+        me.dam = 0;
+        changeSprite( 1 );
+        socket.emit( 'play_sound', 1 );
+      }
+      $("#health").text( "" + me.dam );
+    }
   }),
 
   socket.on( 'player_coord', function(data){
     pList[ data.id ] = data.data;
   }),
 
-  socket.on( 'add_player', function( data ){
+  socket.on( 'add_player', function(data){
     pList[ data.id ] = data.data;
   }),
 
@@ -90,6 +105,15 @@ $(
 
   socket.on( 'msg_update', function(data){
     $("#f-main").append("<p style='color:yellow'>" + data.name + ": " + data.msg + "</p>");
+    $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
+  }),
+
+  socket.on( 'change_sprite', function(data){
+    pList[ data.id ].st = data.st;
+  }),
+
+  socket.on( 'play_sound', function(sound_num){
+    Module._play_sound( sound_num );
   }),
 
   $(document).on( "submit", "#sign-in", function(e){
@@ -102,10 +126,8 @@ $(
         $("#error").val('');
         if( !data ){
           $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
-        }else{
+        }else
           me.name = data.user;
-
-        }
       })
       $("#user").val(''),
       $("#pass").val(''),
@@ -134,7 +156,6 @@ $(
 
       }else
         $("#register").prepend("<p id='error'>Passwords do no match</p>");
-
 
     $("#sign-user").val('');
     $("#sign-pass").val('');
@@ -165,5 +186,4 @@ $(
   $(document).on( "click", "#sign-pass-conf", function(){
     Module._set_location( 5 );
   })
-
 )
