@@ -9,10 +9,6 @@ function sendHit(){
   }
 }
 
-function changeSprite( sprNum ){
-  socket.emit( 'change_sprite', { st:sprNum });
-}
-
 function sendMsg(){
   if( $("#f-send-msg").val() === '' )
     $("#f-send-msg").val("I'm sending empty string cuz I'm cool.");
@@ -83,8 +79,9 @@ $(
     if( data.id === me.id ){
       me.dam -= data.dam;
       if( me.dam <= 0 ){
-        me.dam = 0;
-        changeSprite( 1 );
+        me.dam = 100;
+        socket.emit( 'change_sprite', { st:1 } );
+        me.st = 1;
         socket.emit( 'play_sound', 1 );
       }
       $("#health").text( "" + me.dam );
