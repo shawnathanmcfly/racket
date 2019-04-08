@@ -24,7 +24,7 @@ function process_effects(){
 }
 
 function sendSound( snd, channel ){
-  socket.emit( 'play_sound', { snd:snd, channel:channel );
+  socket.emit( 'play_sound', { snd:snd, channel:channel });
 }
 
 function sendHit(){
