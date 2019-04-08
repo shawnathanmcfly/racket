@@ -14,7 +14,7 @@ function process_effects(){
 
       switch( effectsList[i].st ){
         case 2:
-          effectsList[i].z++;
+          effectsList[i].z += 4;
           break;
         default:
           break;
