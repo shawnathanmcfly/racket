@@ -1,5 +1,27 @@
-var socket, pList = {}, hitList = {};
+var socket, pList = {}, hitList = {}, effectsList = [];
 var me;
+
+var BLOOD_SHOT = 2;
+
+//If lc prop == 0, remove it from effects list
+function process_effects(){
+
+  for( let i = 0; i < effectsList.length; i++ ){
+    if( --effectsList[i].lc <= 0 ){
+      effectsList.splice( i, 1 );
+      continue;
+    }else{
+
+      switch( effectsList[i].st ){
+        case 2:
+          effectsList[i].z++;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+}
 
 function sendHit(){
   for( let i in hitList ){
@@ -11,7 +33,7 @@ function sendHit(){
 
 function sendMsg(){
   if( $("#f-send-msg").val() === '' )
-    $("#f-send-msg").val("I'm sending empty string cuz I'm cool.");
+    $("#f-send-msg").val("I'm sending an empty string cuz I'm cool.");
   socket.emit( 'msg_update', {name:me.name, msg:$("#f-send-msg").val() });
   $("#f-send-msg").val('');
 }
@@ -24,18 +46,28 @@ function sendPlayerData( x, y, r ){
 function getPlayerData(){
     //add distance to player from objects in server
     for( let i in pList ){
-      pList[i].id = i;
+      pList[i].id = i; //wut
       pList[i].d = Module._get_dist(
         Module._get_player_x(), Module._get_player_y(),
         pList[i].x, pList[i].y
       );
     }
 
+    process_effects();
+
+    //sort effects drawing order by distance
+    effectsList.sort( function(a, b){
+      return b.d - a.d;
+    });
+
     //Sort objects for ordered drawing
     const mappedPlayers = Object.keys(pList).map( i => pList[i] )
       .sort(function (a, b) {
           return b.d - a.d;
     });
+
+    //draw background
+    Module._draw_back( 0 );
 
     //cast rays
     Module._cast_rays();
@@ -48,10 +80,22 @@ function getPlayerData(){
       t = Module._draw_sprite(
         mappedPlayers[i].x,
         mappedPlayers[i].y,
+        0,
         mappedPlayers[i].r,
         mappedPlayers[i].d,
         mappedPlayers[i].st
       )
+
+      //Also draw effects
+      if( i < effectsList.length && effectsList.length ){
+        Module._draw_sprite(
+          effectsList[i].x,
+          effectsList[i].y,
+          effectsList[i].z,
+          effectsList[i].r,
+          effectsList[i].d,
+          effectsList[i].st
+      );}
 
       //Add sprite position to hit detection list
       hitList[ mappedPlayers[i].id ] = {
@@ -78,6 +122,13 @@ $(
   socket.on( 'send_hit', function(data){
     if( data.id === me.id ){
       me.dam -= data.dam;
+      socket.emit( 'effects', {
+        x:Module._get_player_x(),
+        y:Module._get_player_y(),
+        z: -40,
+        st:BLOOD_SHOT,
+
+      });
       if( me.dam <= 0 ){
         me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
@@ -86,6 +137,16 @@ $(
       }
       $("#health").text( "" + me.dam );
     }
+  }),
+
+  socket.on( 'effects', function(data){
+    data.lc = 8;
+    data.d = Module._get_dist(
+        Module._get_player_x(), Module._get_player_y(),
+        data.x, data.y
+      ) - 10;
+    effectsList.push(data);
+
   }),
 
   socket.on( 'player_coord', function(data){

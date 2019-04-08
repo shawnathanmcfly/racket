@@ -55,6 +55,10 @@ io.sockets.on('connection',(socket) => {
      io.emit( 'play_sound', data );
    });
 
+   socket.on('effects', function(data){
+     socket.broadcast.emit( 'effects', data );
+   });
+
    socket.on('change_sprite', function(data){
      stats.players[ socket.id ].st = data.st;
      data.id = socket.id;
