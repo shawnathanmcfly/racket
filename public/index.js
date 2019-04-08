@@ -14,7 +14,7 @@ function process_effects(){
 
       switch( effectsList[i].st ){
         case 2:
-          effectsList[i].z += 4;
+          effectsList[i].z += 12;
           break;
         default:
           break;
@@ -120,6 +120,7 @@ $(
   }),
 
   socket.on( 'send_hit', function(data){
+    Module._play_sound( 0 );
     if( data.id === me.id ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
@@ -170,8 +171,8 @@ $(
     pList[ data.id ].st = data.st;
   }),
 
-  socket.on( 'play_sound', function(sound_num){
-    Module._play_sound( sound_num );
+  socket.on( 'play_sound', function(sound){
+    Module._play_sound( sound.num, sound.ch );
   }),
 
   $(document).on( "submit", "#sign-in", function(e){
