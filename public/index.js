@@ -125,7 +125,7 @@ $(
       socket.emit( 'effects', {
         x:Module._get_player_x(),
         y:Module._get_player_y(),
-        z: -65,
+        z: -100,
         st:BLOOD_SHOT,
 
       });
