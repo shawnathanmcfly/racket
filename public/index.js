@@ -23,6 +23,10 @@ function process_effects(){
   }
 }
 
+function sendSound( snd ){
+  socket.emit( 'play_sound', snd );
+}
+
 function sendHit(){
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
