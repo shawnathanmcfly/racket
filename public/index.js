@@ -23,8 +23,8 @@ function process_effects(){
   }
 }
 
-function sendSound( snd ){
-  socket.emit( 'play_sound', snd );
+function sendSound( snd, channel ){
+  socket.emit( 'play_sound', { snd:snd, channel:channel );
 }
 
 function sendHit(){
@@ -176,7 +176,7 @@ $(
   }),
 
   socket.on( 'play_sound', function(sound){
-    Module._play_sound( sound.num, sound.ch );
+    Module._play_sound( sound.snd, sound.channel );
   }),
 
   $(document).on( "submit", "#sign-in", function(e){
