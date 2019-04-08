@@ -24,7 +24,12 @@ function process_effects(){
 }
 
 function sendSound( snd, channel ){
-  socket.emit( 'play_sound', { snd:snd, channel:channel });
+  socket.emit( 'play_sound', {
+    snd:snd,
+    channel:channel,
+    x:Module._get_player_x(),
+    y:Module._get_player_y(),
+  });
 }
 
 function sendHit(){
@@ -124,7 +129,6 @@ $(
   }),
 
   socket.on( 'send_hit', function(data){
-    Module._play_sound( 0 );
     if( data.id === me.id ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
@@ -176,6 +180,17 @@ $(
   }),
 
   socket.on( 'play_sound', function(sound){
+    let soundAdjust;
+
+    soundAdjust = Module._get_dist(
+      Module._get_player_x(), Module._get_player_y(),
+      sound.x, sound.y);
+
+    soundAdjust = 128 / soundAdjust * 577;
+    if( soundAdjust > 90 )
+      soundAdjust = 90
+
+    Module._mix_volume( soundAdjust, sound.channel );
     Module._play_sound( sound.snd, sound.channel );
   }),
 
