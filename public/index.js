@@ -138,7 +138,7 @@ $(
         me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
         me.st = 1;
-        socket.emit( 'play_sound', 1 );
+        sendSound( 1, 3 );
       }
       $("#health").text( "" + me.dam );
     }
