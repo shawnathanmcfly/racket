@@ -1,7 +1,18 @@
-var socket, pList = {}, hitList = {}, effectsList = [];
+var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
 var me;
 
 var BLOOD_SHOT = 2;
+
+function addSpawnPoint( x, y ){
+  spawnPoints.push([x, y]);
+  console.log( spawnPoints );
+}
+
+function setRandomSpawn(){
+  let t = spawnPoints[ Math.floor(Math.random() * 9) ];
+  Module._set_player_x( t[0] );
+  Module._set_player_y( t[1] );
+}
 
 //If lc prop == 0, remove it from effects list
 function process_effects(){
