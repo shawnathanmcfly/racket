@@ -52,7 +52,7 @@ io.sockets.on('connection',(socket) => {
    });
 
    socket.on('play_sound', function(data){
-     io.emit( 'play_sound', data );
+     socket.broadcast.emit( 'play_sound', data );
    });
 
    socket.on('effects', function(data){
