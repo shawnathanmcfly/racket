@@ -48,6 +48,9 @@ function sendHit(){
   $(".logo").animate({
     opacity: 0
   }, 'slow');
+  $("#pointer").animate({
+    opacity: 0
+  }, 'slow');
   $("canvas").show();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
@@ -58,7 +61,7 @@ function sendHit(){
 
 function sendMsg(){
   if( $("#f-send-msg").val() != '' ){
-    socket.emit( 'msg_update', {name:me.name, msg:$("#f-send-msg").val() });
+    socket.emit( 'msg_update', {name:me.name, msg:": " + $("#f-send-msg").val() });
     $("#f-send-msg").val('');
   }
 }
@@ -142,9 +145,8 @@ $(
       me = data;
       $("#f-gui").append("<p>HEALTH</p><p id='health'>" + 100 + "</p>");
       $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
+      socket.emit( 'msg_update', {name:me.name, msg:" connected."});
     });
-
-    socket.emit( 'msg_update', {name:me.name, msg:$("#f-send-msg").val() });
   }),
 
   socket.on( 'send_hit', function(data){
@@ -190,7 +192,7 @@ $(
   }),
 
   socket.on( 'msg_update', function(data){
-    $("#f-main").append("<p style='color:yellow'>" + data.name + " " + data.msg + "</p>");
+    $("#f-main").append("<span style='color:white;font-size:15px'>" + data.name + "</span><span style='color:gray'>" + data.msg + "</span><br>");
     $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
   }),
 
