@@ -2,10 +2,33 @@ html, body {
   background-color: #3a3a3a;
 }
 
+a {
+  color: #c9a700;
+}
+
+.appear {
+  width: 100%;
+  height: 120px;
+  background-color: #c9a700;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  z-index: 2;
+}
+
+.logo {
+  color: white;
+  font-size: 80px;
+  font-family: 'Anton', sans-serif;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+
+}
+
 .component-fade-enter-active, .component-fade-leave-active {
   transition: opacity .3s ease;
 }
-.component-fade-enter, .component-fade-leave-to
-/* .component-fade-leave-active below version 2.1.8 */ {
+.component-fade-enter, .component-fade-leave-to {
   opacity: 0;
 }

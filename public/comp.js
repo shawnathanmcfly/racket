@@ -5,8 +5,10 @@
 var chatWindow = Vue.component( 'chat-window', {
   template:
     "<div>" +
-      "<div id='f-main' class='mt-1' style='overflow:auto;background-color:#232323; height:300px'>" +
+    "<label style='font-size:12px' for='f-main'>Chat</label>" +
+      "<div id='f-main' class='mt-1' style='overflow:auto;background-color:#232323; height:280px'>" +
       "</div>" +
+      "<label for='f-send-msg'>Send Message</label>" +
       "<textarea id='f-send-msg' class='mt-1' style='border:none;height:80px; background-color:#232323; width:100%'></textarea>" +
     "</div>"
 });
@@ -75,7 +77,7 @@ var fNav = new Vue({
       color: "white",
       borderRadius: "8px 8px 8px 8px",
       fontFamily: "'Anton', sans-serif",
-      padding: "15px 5px 15px 5px",
+      padding: "5px 5px 15px 5px",
       wordSpacing: "6px"
     }
   },
