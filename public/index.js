@@ -5,7 +5,6 @@ var BLOOD_SHOT = 2;
 
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
-
 }
 
 function setRandomSpawn(){
@@ -13,6 +12,7 @@ function setRandomSpawn(){
   let t = spawnPoints[ Math.floor(Math.random() * 9) ];
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
+  socket.emit( 'change_sprite', { st:0 } );
 }
 
 //If lc prop == 0, remove it from effects list
@@ -175,6 +175,7 @@ $(
       if( me.dam <= 0 ){
         me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
+        Module._set_dead();
         me.st = 1;
         sendSound( 1, 3 );
       }
