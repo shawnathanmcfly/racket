@@ -63,6 +63,9 @@ var fGui = new Vue({
       borderRadius: "8px 8px 8px 8px",
       textAlign: "center"
     }
+  },
+  components: {
+    
   }
 });
 
