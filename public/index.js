@@ -5,7 +5,7 @@ var BLOOD_SHOT = 2;
 
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
-  console.log( spawnPoints );
+
 }
 
 function setRandomSpawn(){
@@ -45,6 +45,7 @@ function sendSound( snd, channel ){
 }
 
 function sendHit(){
+
   $(".logo").animate({
     opacity: 0
   }, 'slow');
@@ -52,10 +53,17 @@ function sendHit(){
     opacity: 0
   }, 'slow');
   $("canvas").show();
+  $(".appear").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2)
-        socket.emit( 'send_hit', { id:hitList[i].id, dam:6 });
+      hitList[i].x + hitList[i].w > 640 / 2){
+        socket.emit( 'send_hit', { id:i, dam:6 }, function(data){
+          if( data.oppHealth <= 0 ){
+            console.log( ++me.frags );
+            $("#frags").text( me.frags );
+          }
+        });
+      }
   }
 }
 
@@ -115,7 +123,7 @@ function getPlayerData(){
       )
 
       //Also draw effects
-      if( i < effectsList.length && effectsList.length ){
+      if( i < effectsList.length ){
         Module._draw_sprite(
           effectsList[i].x,
           effectsList[i].y,
@@ -140,17 +148,22 @@ $(
 
   socket.on('connect', function() {
     var pid = socket.id;
-    var newPlayer = { id: socket.id, name: "", st:0, x:600, y:600, r:3.12 }
+    var newPlayer = { st:0,
+      x:600, y:600, r:3.12 }
     socket.emit( 'add_player', newPlayer, function(data){
+
+      //setup initial player data
       me = data;
-      $("#f-gui").append("<p>HEALTH</p><p id='health'>" + 100 + "</p>");
+      $("#f-gui").prepend("<p align='center'>FRAGS</p><p align='center' style='font-size:40px;' id='frags'>" + data.frags + "</p>");
+      $("#f-gui").prepend("<p align='center'>HEALTH</p><p align='center' style='font-size:40px;' id='health'>" + data.dam + "</p>");
       $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
+      //let the other clients know of this
       socket.emit( 'msg_update', {name:me.name, msg:" connected."});
     });
   }),
 
   socket.on( 'send_hit', function(data){
-    if( data.id === me.id ){
+    if( data.id === socket.id ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
         x:Module._get_player_x(),
@@ -165,7 +178,7 @@ $(
         me.st = 1;
         sendSound( 1, 3 );
       }
-      $("#health").text( "" + me.dam );
+      $("#health").text( me.dam );
     }
   }),
 

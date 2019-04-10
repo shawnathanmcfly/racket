@@ -18,12 +18,11 @@ io.sockets.on('connection',(socket) => {
 
    //Add player to server when connected
    socket.on( 'add_player', function(data, cb){
-     let id = data.id;
-     delete data.id;
      data.dam = 100;
+     data.frags = 0;
      data.name = stats.randomNewbName();
-     stats.players[ id ] = data;
-     socket.broadcast.emit( 'add_player', { id: id, data:data } );
+     stats.players[ socket.id ] = data;
+     socket.broadcast.emit( 'add_player', { id: socket.id, data:data } );
      cb(data);
    });
 
@@ -47,8 +46,9 @@ io.sockets.on('connection',(socket) => {
      io.emit( 'player_disconnect', socket.id );
    });
 
-   socket.on('send_hit', function(data){
+   socket.on('send_hit', function(data, cb){
      socket.broadcast.emit( 'send_hit', data );
+     cb({ oppHealth: stats.players[ data.id ].dam - data.dam });
    });
 
    socket.on('play_sound', function(data){

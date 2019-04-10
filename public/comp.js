@@ -47,6 +47,25 @@ var registerWindow = Vue.component( 'register-window', {
     "</form>"
 });
 
+var controls = Vue.component( 'controls', {
+  template:
+
+      "<div style='background-color:#232323; padding:15px 15px 15px 15px; position:absolute; bottom:20px; width:80%'>" +
+        "<span><img src='https://img.webnots.com/2014/03/C1.png' width='40' height='40'> = message mode</span><br>" +
+        "<span>" +
+          "<img src='https://img.webnots.com/2014/03/W1.png' width='40' height='40'>" +
+          "<img src='https://img.webnots.com/2014/03/S1.png' width='40' height='40'>" +
+          "<img src='https://img.webnots.com/2014/03/A1.png' width='40' height='40'>" +
+          "<img src='https://img.webnots.com/2014/03/D1.png' width='40' height='40'>" +
+          " = move" +
+        "</span><br>" +
+        "<span><img src='https://img.webnots.com/2014/03/Pipe-and-Left-Slash.png' width='40' height='40'> = sound on</span><br>" +
+        "<span>MOUSE BUTTONS = shoot</span><br>" +
+
+      "</div>"
+
+});
+
 var fGui = new Vue({
   el: "#f-gui",
   data:{
@@ -58,16 +77,17 @@ var fGui = new Vue({
       width: "100%",
       height: "480px",
       color: "white",
-      padding: "5px",
+      padding: "20px 20px 20px 20px",
       fontFamily: "'Anton', sans-serif",
       borderRadius: "8px 8px 8px 8px",
-      textAlign: "center"
     }
   },
   components: {
-    
+    controls: controls
   }
 });
+
+
 
 var fNav = new Vue({
   el: "#f-nav",
@@ -80,7 +100,7 @@ var fNav = new Vue({
       color: "white",
       borderRadius: "8px 8px 8px 8px",
       fontFamily: "'Anton', sans-serif",
-      padding: "5px 5px 15px 5px",
+      padding: "5px 15px 5px 15px",
       wordSpacing: "6px"
     }
   },
