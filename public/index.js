@@ -13,6 +13,7 @@ function setRandomSpawn(){
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
   socket.emit( 'change_sprite', { st:0 } );
+  me.st = 0;
 }
 
 //If lc prop == 0, remove it from effects list
