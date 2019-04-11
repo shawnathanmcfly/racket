@@ -153,7 +153,7 @@ function getPlayerData(){
         socket.emit( 'effects', {
           x:Module._get_player_x() + (me.dam >> 1),
           y:Module._get_player_y() + (me.dam >> 1),
-          z: -200,
+          z: -(200+me.dam),
           st:BLOOD_SHOT,
 
         });
