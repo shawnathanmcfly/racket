@@ -15,6 +15,7 @@ function setRandomSpawn(){
   Module._set_player_y( t[1] );
   socket.emit( 'change_sprite', { st:0 } );
   me.dam = 100;
+  $("#health").text( me.dam );
   me.st = 0;
 }
 
@@ -149,7 +150,6 @@ function getPlayerData(){
       $("#health").text( me.dam );
 
       if( me.dam <= 0 ){
-        me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
         console.log(me.rats[i].id);
         socket.emit( 'send_frag', { id: me.rats[i] });
@@ -157,7 +157,6 @@ function getPlayerData(){
         me.st = 1;
         sendSound( 1, 3 );
         me.rats = [];
-        $("#health").text( me.dam );
         break;
       }
 
