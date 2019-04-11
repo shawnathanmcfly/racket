@@ -1,4 +1,5 @@
 var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
+var bullList = [];
 var me;
 
 var BLOOD_SHOT = 2;
@@ -9,7 +10,7 @@ function addSpawnPoint( x, y ){
 
 function setRandomSpawn(){
 
-  let t = spawnPoints[ Math.floor(Math.random() * 9) ];
+  let t = spawnPoints[ Math.floor(Math.random() * (spawnPoints.length - 1)) ];
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
   socket.emit( 'change_sprite', { st:0 } );
@@ -109,10 +110,64 @@ function getPlayerData(){
     //cast rays
     Module._cast_rays();
 
+    for( let i = 0; i < bullList.length; i++ ){
+      let distance;
+      bullList[i].x += bullList[i].sx;
+      bullList[i].y += bullList[i].sy;
+
+      if( bullList[i].x > 18 * 200 ||  bullList[i].x < 200 ||
+          bullList[i].y > 19 * 200 ||  bullList[i].y < 200 ){
+
+            bullList.splice( i, 1);
+            continue;
+      }
+
+
+
+      distance = Module._get_dist(
+        Module._get_player_x(), Module._get_player_y(),
+        bullList[i].x, bullList[i].y);
+
+      Module._draw_sprite(
+        bullList[i].x,
+        bullList[i].y,
+        bullList[i].z,
+        0,
+        distance,
+        bullList[i].st
+      );
+
+      if( distance <= 100 && bullList[i].id != socket.id ){
+        me.rats.push( bullList[i].id );
+        bullList.splice( i, 1);
+        continue;
+      }
+    }
+
+    for( let i = 0; i < me.rats.length; i++ ){
+
+      me.dam--;
+      $("#health").text( me.dam );
+
+      if( me.dam <= 0 ){
+        me.dam = 100;
+        socket.emit( 'change_sprite', { st:1 } );
+        Module._set_dead();
+        me.st = 1;
+        sendSound( 1, 3 );
+        me.rats = [];
+        $("#health").text( me.dam );
+        break;
+      }
+
+    }
+
     //Draw Sprites from furthest to closest.
     //(Avoid overlapping)
     for( let i = 0; i < mappedPlayers.length; i++ ){
       let t;
+
+      
 
       t = Module._draw_sprite(
         mappedPlayers[i].x,
@@ -192,6 +247,12 @@ $(
       ) - 10;
     effectsList.push(data);
 
+  }),
+
+  socket.on( 'send_bullet', function(data){
+
+    bullList.push( data );
+      console.log( bullList )
   }),
 
   socket.on( 'player_coord', function(data){

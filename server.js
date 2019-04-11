@@ -20,6 +20,7 @@ io.sockets.on('connection',(socket) => {
    socket.on( 'add_player', function(data, cb){
      data.dam = 100;
      data.frags = 0;
+     data.rats = [];
      data.name = stats.randomNewbName();
      stats.players[ socket.id ] = data;
      socket.broadcast.emit( 'add_player', { id: socket.id, data:data } );
@@ -30,6 +31,10 @@ io.sockets.on('connection',(socket) => {
    socket.on('player_coord', function(data){
     stats.players[ socket.id ] = data;
     socket.broadcast.emit('player_coord', { id:socket.id, data:data });
+   });
+
+   socket.on('send_bullet', function(data){
+     io.emit('send_bullet', data );
    });
 
    //send new message data to all clients. Including sending client.
