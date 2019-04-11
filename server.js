@@ -57,8 +57,16 @@ io.sockets.on('connection',(socket) => {
    });
 
    socket.on('send_hit', function(data, cb){
-     socket.broadcast.emit( 'send_hit', data );
-     cb({ oppHealth: stats.players[ data.id ].dam - data.dam });
+
+
+     if( stats.players[ data.id ].dam > 0){
+      socket.broadcast.emit( 'send_hit', data );
+      cb({ oppHealth: stats.players[ data.id ].dam - data.dam, frag: 1 });
+    }else {
+      cb({ oppHealth: stats.players[ data.id ].dam, frag: 0 });
+    }
+
+
    });
 
    socket.on('play_sound', function(data){

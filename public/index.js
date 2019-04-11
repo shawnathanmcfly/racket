@@ -60,10 +60,10 @@ function sendHit(){
   $(".appear").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2 && pList[ i ].dam > 0 ){
+      hitList[i].x + hitList[i].w > 640 / 2 ){
         socket.emit( 'send_hit', { id:i, dam:6 }, function(data){
           if( data.oppHealth <= 0 ){
-            me.frags++;
+            me.frags += data.frag;
             $("#frags").text( me.frags );
           }
         });
