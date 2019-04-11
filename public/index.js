@@ -135,7 +135,7 @@ function getPlayerData(){
         bullList[i].st
       );
 
-      if( distance <= 100 && bullList[i].id != socket.id ){
+      if( distance <= 100 && bullList[i].id != socket.id && me.dam ){
         me.rats.push( bullList[i].id );
         bullList.splice( i, 1);
         continue;
@@ -219,7 +219,7 @@ $(
   }),
 
   socket.on( 'send_hit', function(data){
-    if( data.id === socket.id ){
+    if( data.id === socket.id && me.dam ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
         x:Module._get_player_x(),
