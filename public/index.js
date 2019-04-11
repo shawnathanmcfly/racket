@@ -135,7 +135,7 @@ function getPlayerData(){
         bullList[i].st
       );
 
-      if( distance <= 50 && bullList[i].id != socket.id ){
+      if( distance <= 100 && bullList[i].id != socket.id ){
         me.rats.push( bullList[i].id );
         bullList.splice( i, 1);
         continue;
