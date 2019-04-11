@@ -4,9 +4,9 @@ Module.onRuntimeInitialized = _ => {
     $("canvas").hide();
 
     $("#game-window").append("<p class='logo'>Racket.</p>");
-    $(".appear").animate({top: "100px"}, 7000, function(){
+    $(".appear").animate({top: "100px"}, 3000, function(){
       this.remove();
-      
+
     });
 
 

@@ -14,6 +14,7 @@ function setRandomSpawn(){
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
   socket.emit( 'change_sprite', { st:0 } );
+  me.dam = 100;
   me.st = 0;
 }
 
@@ -219,7 +220,7 @@ $(
   }),
 
   socket.on( 'send_hit', function(data){
-    if( data.id === socket.id && me.dam ){
+    if( data.id === socket.id && me.dam > 0 ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
         x:Module._get_player_x(),
@@ -229,7 +230,7 @@ $(
 
       });
       if( me.dam <= 0 ){
-        me.dam = 100;
+
         socket.emit( 'change_sprite', { st:1 } );
         Module._set_dead();
         me.st = 1;
