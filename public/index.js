@@ -150,7 +150,8 @@ function getPlayerData(){
       if( me.dam <= 0 ){
         me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
-        socket.emit( 'send_frag', { id: me.rats[i].id });
+        console.log(me.rats[i].id);
+        socket.emit( 'send_frag', { id: me.rats[i] });
         Module._set_dead();
         me.st = 1;
         sendSound( 1, 3 );
@@ -251,7 +252,7 @@ $(
   socket.on( 'send_bullet', function(data){
 
     bullList.push( data );
-      console.log( bullList )
+
   }),
 
   socket.on( 'player_coord', function(data){
@@ -276,6 +277,7 @@ $(
   }),
 
   socket.on( 'send_frag', function(data){
+    console.log( data.id );
     if( data.id === socket.id ){
       ++me.frags;
       $("#frags").text( me.frags );

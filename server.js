@@ -34,7 +34,8 @@ io.sockets.on('connection',(socket) => {
    });
 
    socket.on( 'send_frag', function(data){
-     io.emit( 'send_frag', data );
+
+     socket.broadcast.emit( 'send_frag', data );
    });
 
    socket.on('send_bullet', function(data){
