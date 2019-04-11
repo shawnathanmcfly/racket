@@ -58,6 +58,7 @@ function sendHit(){
   }, 'slow');
   $("canvas").show();
   $(".appear").remove();
+  $(".start").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
       hitList[i].x + hitList[i].w > 640 / 2 ){
@@ -318,7 +319,7 @@ $(
       }, function( data ){
         $("#error").val('');
         if( !data ){
-          $("#sign-in").prepend("<p id='error'>You fucked up somewhere</p>");
+          $("#sign-in").prepend("<p id='error'>You made an error somewhere</p>");
         }else
           me.name = data.user;
       })
@@ -341,7 +342,7 @@ $(
           $("#register").find('#error').remove();
 
           if( !data ){
-            $("#register").prepend("<p id='error'>That name taken nigga</p>");
+            $("#register").prepend("<p id='error'>That name is taken</p>");
 
           }else
             me.name = data.user.user;
