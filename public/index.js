@@ -149,11 +149,11 @@ function getPlayerData(){
       me.dam--;
       $("#health").text( me.dam );
 
-      if( me.dam % 2 == 0 ){
+      if( me.dam % 10 == 0 ){
         socket.emit( 'effects', {
-          x:Module._get_player_x() + (me.dam >> 5),
-          y:Module._get_player_y() + (me.dam >> 5),
-          z: -180,
+          x:Module._get_player_x() + (me.dam >> 1),
+          y:Module._get_player_y() + (me.dam >> 1),
+          z: -200,
           st:BLOOD_SHOT,
 
         });
