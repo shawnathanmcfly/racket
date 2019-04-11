@@ -60,6 +60,7 @@ var controls = Vue.component( 'controls', {
           " = move" +
         "</span><br>" +
         "<span><img src='https://img.webnots.com/2014/03/Pipe-and-Left-Slash.png' width='40' height='40'> = sound on</span><br>" +
+        "<span><img src='https://img.webnots.com/2014/03/M1.png' width='40' height='40'> = capture / release mouse </span><br>" +
         "<span>MOUSE BUTTONS = shoot</span><br>" +
 
       "</div>"
