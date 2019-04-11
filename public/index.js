@@ -149,6 +149,16 @@ function getPlayerData(){
       me.dam--;
       $("#health").text( me.dam );
 
+      if( me.dam % 10 == 0 ){
+        socket.emit( 'effects', {
+          x:Module._get_player_x() + me.dam,
+          y:Module._get_player_y() + -me.dam,
+          z: -180,
+          st:BLOOD_SHOT,
+
+        });
+      }
+
       if( me.dam <= 0 ){
         socket.emit( 'change_sprite', { st:1 } );
         console.log(me.rats[i].id);
