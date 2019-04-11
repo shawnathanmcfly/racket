@@ -33,6 +33,10 @@ io.sockets.on('connection',(socket) => {
     socket.broadcast.emit('player_coord', { id:socket.id, data:data });
    });
 
+   socket.on( 'send_frag', function(data){
+     io.emit( 'send_frag', data );
+   });
+
    socket.on('send_bullet', function(data){
      io.emit('send_bullet', data );
    });

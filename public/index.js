@@ -61,7 +61,7 @@ function sendHit(){
       hitList[i].x + hitList[i].w > 640 / 2){
         socket.emit( 'send_hit', { id:i, dam:6 }, function(data){
           if( data.oppHealth <= 0 ){
-            console.log( ++me.frags );
+            me.frags++;
             $("#frags").text( me.frags );
           }
         });
@@ -122,8 +122,6 @@ function getPlayerData(){
             continue;
       }
 
-
-
       distance = Module._get_dist(
         Module._get_player_x(), Module._get_player_y(),
         bullList[i].x, bullList[i].y);
@@ -137,7 +135,7 @@ function getPlayerData(){
         bullList[i].st
       );
 
-      if( distance <= 100 && bullList[i].id != socket.id ){
+      if( distance <= 50 && bullList[i].id != socket.id ){
         me.rats.push( bullList[i].id );
         bullList.splice( i, 1);
         continue;
@@ -152,6 +150,7 @@ function getPlayerData(){
       if( me.dam <= 0 ){
         me.dam = 100;
         socket.emit( 'change_sprite', { st:1 } );
+        socket.emit( 'send_frag', { id: me.rats[i].id });
         Module._set_dead();
         me.st = 1;
         sendSound( 1, 3 );
@@ -167,7 +166,7 @@ function getPlayerData(){
     for( let i = 0; i < mappedPlayers.length; i++ ){
       let t;
 
-      
+
 
       t = Module._draw_sprite(
         mappedPlayers[i].x,
@@ -274,6 +273,13 @@ $(
 
   socket.on( 'change_sprite', function(data){
     pList[ data.id ].st = data.st;
+  }),
+
+  socket.on( 'send_frag', function(data){
+    if( data.id === socket.id ){
+      ++me.frags;
+      $("#frags").text( me.frags );
+    }
   }),
 
   socket.on( 'play_sound', function(sound){
