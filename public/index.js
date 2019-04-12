@@ -14,6 +14,12 @@ function setRandomSpawn(){
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
   socket.emit( 'change_sprite', { st:0 } );
+  socket.emit( 'update_position', {
+    id:socket.id,
+    x:t[0],
+    y:t[1],
+    r:0
+  });
   me.dam = 100;
   $("#health").text( me.dam );
   me.st = 0;
