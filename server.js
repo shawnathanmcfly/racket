@@ -22,19 +22,20 @@ io.sockets.on('connection',(socket) => {
      data.frags = 0;
      data.rats = [];
      data.name = stats.randomNewbName();
-     stats.players[ socket.id ] = data;
      socket.broadcast.emit( 'add_player', { id: socket.id, data:data } );
      cb(data);
    });
 
+   socket.on( 'send_init_info', function(data){
+     socket.broadcast.emit( 'send_init_info', data );
+   });
+
    //update all clients on players postion and rotation
    socket.on('player_coord', function(data){
-    stats.players[ socket.id ] = data;
     socket.broadcast.emit('player_coord', { id:socket.id, data:data });
    });
 
    socket.on( 'send_frag', function(data){
-
      socket.broadcast.emit( 'send_frag', data );
    });
 
@@ -47,26 +48,16 @@ io.sockets.on('connection',(socket) => {
      io.emit('msg_update', data );
    });
 
-   //remove instance of player from server.
-   //Also send notification of this for other
-   //players can delete the instance from
-   //client side data table
    socket.on('disconnect', function(){
-     delete stats.players[socket.id];
      io.emit( 'player_disconnect', socket.id );
    });
 
-   socket.on('send_hit', function(data, cb){
-
-
-     if( stats.players[ data.id ].dam > 0){
+   socket.on('send_hit', function(data ){
       socket.broadcast.emit( 'send_hit', data );
-      cb({ oppHealth: stats.players[ data.id ].dam - data.dam, frag: 1 });
-    }else {
-      cb({ oppHealth: stats.players[ data.id ].dam, frag: 0 });
-    }
+   });
 
-
+   socket.on( 'update_position', function(data){
+     socket.broadcast.emit( 'update_position', data );
    });
 
    socket.on('play_sound', function(data){
@@ -78,7 +69,6 @@ io.sockets.on('connection',(socket) => {
    });
 
    socket.on('change_sprite', function(data){
-     stats.players[ socket.id ].st = data.st;
      data.id = socket.id;
      socket.broadcast.emit( 'change_sprite', data );
    });

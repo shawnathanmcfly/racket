@@ -61,14 +61,9 @@ function sendHit(){
   $(".start").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2 ){
-        socket.emit( 'send_hit', { id:i, dam:6 }, function(data){
-          if( data.oppHealth <= 0 ){
-            me.frags += data.frag;
-            $("#frags").text( me.frags );
-          }
-        });
-      }
+      hitList[i].x + hitList[i].w > 640 / 2 )
+        socket.emit( 'send_hit', { id:i, sid: socket.id, dam:6 });
+
   }
 }
 
@@ -79,13 +74,9 @@ function sendMsg(){
   }
 }
 
-function sendPlayerData( x, y, r ){
-  me.x = x; me.y = y; me.r = r;
-  socket.emit( 'player_coord', me );
-}
-
-function getPlayerData(){
+function updateScreen(){
     //add distance to player from objects in server
+
     for( let i in pList ){
       pList[i].id = i; //wut
       pList[i].d = Module._get_dist(
@@ -162,7 +153,6 @@ function getPlayerData(){
 
       if( me.dam <= 0 ){
         socket.emit( 'change_sprite', { st:1 } );
-        console.log(me.rats[i].id);
         socket.emit( 'send_frag', { id: me.rats[i] });
         Module._set_dead();
         me.st = 1;
@@ -177,8 +167,6 @@ function getPlayerData(){
     //(Avoid overlapping)
     for( let i = 0; i < mappedPlayers.length; i++ ){
       let t;
-
-
 
       t = Module._draw_sprite(
         mappedPlayers[i].x,
@@ -213,8 +201,11 @@ $(
 
   socket = io.connect(),
 
+  socket.on( 'send_init_info', function(data){
+    pList[ data.id ] = data.data;
+  }),
+
   socket.on('connect', function() {
-    var pid = socket.id;
     var newPlayer = { st:0,
       x:600, y:600, r:3.12 }
     socket.emit( 'add_player', newPlayer, function(data){
@@ -245,8 +236,17 @@ $(
         Module._set_dead();
         me.st = 1;
         sendSound( 1, 3 );
+        socket.emit( 'send_frag', { id: data.sid });
       }
       $("#health").text( me.dam );
+    }
+  }),
+
+  socket.on( 'update_position', function(data){
+    if( data ){
+      pList[ data.id ].x = data.x;
+      pList[ data.id ].y = data.y;
+      pList[ data.id ].r = data.r;
     }
   }),
 
@@ -261,9 +261,7 @@ $(
   }),
 
   socket.on( 'send_bullet', function(data){
-
     bullList.push( data );
-
   }),
 
   socket.on( 'player_coord', function(data){
@@ -272,6 +270,7 @@ $(
 
   socket.on( 'add_player', function(data){
     pList[ data.id ] = data.data;
+    socket.emit('send_init_info', { id: socket.id, data:me} );
   }),
 
   socket.on( 'player_disconnect', function(data){
@@ -288,7 +287,6 @@ $(
   }),
 
   socket.on( 'send_frag', function(data){
-    console.log( data.id );
     if( data.id === socket.id ){
       ++me.frags;
       $("#frags").text( me.frags );

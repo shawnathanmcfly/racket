@@ -5,7 +5,6 @@ module.exports = {
 
   newbNames: [
       "Newbard Dreyfuss",
-      "Sir Spanks Alot",
       "Im Carrying The Team",
       "Duke Cuckem",
       "A Zima Pleze",
@@ -14,6 +13,9 @@ module.exports = {
       //Reserved for Travis Achimasi
       "ChinUpper",
       "Nose Pointer",
+      "Chuckles",
+      "AppleUser1990",
+      "DryBagelMucher",
 
   ],
 
