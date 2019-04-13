@@ -235,9 +235,6 @@ $(
 
       //setup initial player data
       me = data;
-      $("#f-gui").prepend("<p align='center'>FRAGS</p><p align='center' style='font-size:40px;' id='frags'>" + data.frags + "</p>");
-      $("#f-gui").prepend("<p align='center'>HEALTH</p><p align='center' style='font-size:40px;' id='health'>" + data.dam + "</p>");
-      $("#f-main").scrollTop($("#f-main").prop("scrollHeight"));
       //let the other clients know of this
       socket.emit( 'msg_update', {name:me.name, msg:" connected."});
     });
