@@ -311,9 +311,9 @@ $(
       Module._get_player_x(), Module._get_player_y(),
       sound.x, sound.y);
 
-    soundAdjust = 60 / soundAdjust * 377;
-    if( soundAdjust > 60 )
-      soundAdjust = 60
+    soundAdjust = 40 / soundAdjust * 277;
+    if( soundAdjust > 40 )
+      soundAdjust = 40
 
     Module._mix_volume( soundAdjust, sound.channel );
     Module._play_sound( sound.snd, sound.channel );
