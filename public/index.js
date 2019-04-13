@@ -140,7 +140,7 @@ function updateScreen(){
         me.rats.push( {id: bullList[i].id,
           xFace: Math.floor(Math.random() * 640),
           yFace: Math.floor(Math.random() * 480),
-          life: 400
+          life: 120
         });
         sendSound( 3, 3 );
         Module._play_sound( 3, 3 );
@@ -154,7 +154,7 @@ function updateScreen(){
       me.dam -= 0.10;
       $("#health").text( Math.round( me.dam ) );
 
-      if( --me.rats.life <= 0 ){
+      if( --me.rats[i].life <= 0 ){
         me.rats.splice( i, 1 );
         continue;
       }
