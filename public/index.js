@@ -249,7 +249,7 @@ $(
         sendSound( 1, 3 );
         socket.emit( 'send_frag', { id: data.sid });
       }
-      $("#health").text( me.dam );
+      $("#health").text( Math.round( me.dam ) );
     }
   }),
 
