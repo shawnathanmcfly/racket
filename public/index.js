@@ -57,15 +57,6 @@ function sendSound( snd, channel ){
 
 function sendHit(){
 
-  $(".logo").animate({
-    opacity: 0
-  }, 'slow');
-  $("#pointer").animate({
-    opacity: 0
-  }, 'slow');
-  $("canvas").show();
-  $(".appear").remove();
-  $(".start").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
       hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st != 0)
@@ -320,9 +311,9 @@ $(
       Module._get_player_x(), Module._get_player_y(),
       sound.x, sound.y);
 
-    soundAdjust = 128 / soundAdjust * 577;
-    if( soundAdjust > 90 )
-      soundAdjust = 90
+    soundAdjust = 60 / soundAdjust * 377;
+    if( soundAdjust > 60 )
+      soundAdjust = 60
 
     Module._mix_volume( soundAdjust, sound.channel );
     Module._play_sound( sound.snd, sound.channel );
