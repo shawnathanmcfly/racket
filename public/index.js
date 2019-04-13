@@ -1,6 +1,6 @@
 var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
 var bullList = [];
-var me;
+var me = {};
 
 var BLOOD_SHOT = 2;
 
@@ -17,14 +17,12 @@ function setRandomSpawn(){
   socket.emit( 'update_position', {
     id:socket.id,
     x:t[0],
-    y:t[1],
-    r:0
+    y:t[1]
   });
-  socket.emit('send_init_info');
+
   socket.emit( 'change_sprite', { st:0 } );
-  me.dam = 100;
-  $("#health").text( Math.round( me.dam ) );
-  me.st = 0;
+  $("#health").text( "" + 100 );
+
 }
 
 //If lc prop == 0, remove it from effects list
@@ -216,20 +214,40 @@ $(
 
   socket = io.connect(),
 
-  socket.on( 'send_init_info', function(data){
-    pList[ data.id ] = data.data;
+  socket.on('connect', function() {
+    me = {
+      dam: 0,
+      frags: 0,
+      rats: [],
+      x: 0,
+      y: 0,
+      st: 0,
+      id: 0,
+      name: ""
+    }
+
+    socket.emit( 'add_player', me, function(data){
+      me = data;
+    });
   }),
 
-  socket.on('connect', function() {
-    var newPlayer = { st:0,
-      x:600, y:600, r:3.12 }
-    socket.emit( 'add_player', newPlayer, function(data){
-
-      //setup initial player data
-      me = data;
-      //let the other clients know of this
-      socket.emit( 'msg_update', {name:me.name, msg:" connected."});
+  socket.on( 'player_join', function(){
+    socket.emit( 'update_position', { id:socket.id,
+      x:Module._get_player_x(),
+      y:Module._get_player_y(),
+      r:Module._get_player_r()
     });
+  }),
+
+  socket.on( 'add_player', function(data){
+
+    pList[ data.id ] = data;
+    socket.emit( 'send_data_to_new_player', { id:socket.id, data:data });
+
+  }),
+
+  socket.on( 'send_data_to_new_player', function(data){
+    pList[ data.id ] = data.data;
   }),
 
   socket.on( 'send_hit', function(data){
@@ -258,7 +276,7 @@ $(
     if( data ){
       pList[ data.id ].x = data.x;
       pList[ data.id ].y = data.y;
-      pList[ data.id ].r = data.r;
+
     }
   }),
 
@@ -277,10 +295,6 @@ $(
   }),
 
   socket.on( 'player_coord', function(data){
-    pList[ data.id ] = data.data;
-  }),
-
-  socket.on( 'add_player', function(data){
     pList[ data.id ] = data.data;
   }),
 

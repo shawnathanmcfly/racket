@@ -21,13 +21,21 @@ io.sockets.on('connection',(socket) => {
      data.dam = 100;
      data.frags = 0;
      data.rats = [];
+     data.x = 0;
+     data.y = 0;
+     data.st = 0;
+     data.id = socket.id;
      data.name = stats.randomNewbName();
-     socket.broadcast.emit( 'add_player', { id: socket.id, data:data } );
+     socket.broadcast.emit( 'add_player', data);
      cb(data);
    });
 
-   socket.on( 'send_init_info', function(data){
-     socket.broadcast.emit( 'send_init_info', data );
+   socket.on( 'player_join', function(){
+     socket.broadcast.emit('player_join');
+   });
+
+   socket.on( 'send_data_to_new_player', function(data){
+     socket.broadcast.emit( 'send_data_to_new_player', data );
    });
 
    //update all clients on players postion and rotation
