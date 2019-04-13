@@ -22,7 +22,7 @@ function setRandomSpawn(){
   });
   socket.emit( 'change_sprite', { st:0 } );
   me.dam = 100;
-  $("#health").text( me.dam );
+  $("#health").text( Math.round( me.dam ) );
   me.st = 0;
 }
 
@@ -150,8 +150,8 @@ function updateScreen(){
 
     for( let i = 0; i < me.rats.length; i++ ){
 
-      me.dam--;
-      $("#health").text( me.dam );
+      me.dam -= 0.05;
+      $("#health").text( Math.round( me.dam ) );
 
       if( me.dam % 10 == 0 ){
         socket.emit( 'effects', {
