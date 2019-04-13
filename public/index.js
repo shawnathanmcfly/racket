@@ -20,6 +20,7 @@ function setRandomSpawn(){
     y:t[1]
   });
 
+  me.dam = 100;
   socket.emit( 'change_sprite', { st:0 } );
   $("#health").text( "" + 100 );
 
