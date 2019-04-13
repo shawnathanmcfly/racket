@@ -20,6 +20,7 @@ function setRandomSpawn(){
     y:t[1],
     r:0
   });
+  socket.emit('send_init_info');
   socket.emit( 'change_sprite', { st:0 } );
   me.dam = 100;
   $("#health").text( Math.round( me.dam ) );
@@ -281,7 +282,6 @@ $(
 
   socket.on( 'add_player', function(data){
     pList[ data.id ] = data.data;
-    socket.emit('send_init_info', { id: socket.id, data:me} );
   }),
 
   socket.on( 'player_disconnect', function(data){
