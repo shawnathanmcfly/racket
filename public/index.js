@@ -13,13 +13,14 @@ function setRandomSpawn(){
   let t = spawnPoints[ Math.floor(Math.random() * (spawnPoints.length - 1)) ];
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
-  socket.emit( 'change_sprite', { st:0 } );
+
   socket.emit( 'update_position', {
     id:socket.id,
     x:t[0],
     y:t[1],
     r:0
   });
+  socket.emit( 'change_sprite', { st:0 } );
   me.dam = 100;
   $("#health").text( me.dam );
   me.st = 0;
@@ -67,7 +68,7 @@ function sendHit(){
   $(".start").remove();
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2 )
+      hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st != 0)
         socket.emit( 'send_hit', { id:i, sid: socket.id, dam:6 });
 
   }
@@ -136,7 +137,11 @@ function updateScreen(){
       );
 
       if( distance <= 100 && bullList[i].id != socket.id && me.dam ){
-        me.rats.push( bullList[i].id );
+        me.rats.push( {id: bullList[i].id,
+          xFace: Math.floor(Math.random() * 640),
+          yFace: Math.floor(Math.random() * 480)
+        });
+        sendSound( 3, 3 );
         bullList.splice( i, 1);
         continue;
       }
@@ -159,7 +164,7 @@ function updateScreen(){
 
       if( me.dam <= 0 ){
         socket.emit( 'change_sprite', { st:1 } );
-        socket.emit( 'send_frag', { id: me.rats[i] });
+        socket.emit( 'send_frag', { id: me.rats[i].id });
         Module._set_dead();
         me.st = 1;
         sendSound( 1, 3 );
@@ -192,7 +197,8 @@ function updateScreen(){
           effectsList[i].r,
           effectsList[i].d,
           effectsList[i].st
-      );}
+        );
+      }
 
       //Add sprite position to hit detection list
       hitList[ mappedPlayers[i].id ] = {
@@ -201,6 +207,10 @@ function updateScreen(){
       }
     }
     Module._process_gui();
+
+    for( let i = 0; i < me.rats.length; i++ )
+      Module._draw_rat_on_face( me.rats[i].xFace, me.rats[i].yFace );
+
 }
 
 $(
