@@ -142,6 +142,7 @@ function updateScreen(){
           yFace: Math.floor(Math.random() * 480)
         });
         sendSound( 3, 3 );
+        Module._play_sound( 3, 3 );
         bullList.splice( i, 1);
         continue;
       }
