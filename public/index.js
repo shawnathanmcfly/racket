@@ -139,7 +139,8 @@ function updateScreen(){
       if( distance <= 100 && bullList[i].id != socket.id && me.dam ){
         me.rats.push( {id: bullList[i].id,
           xFace: Math.floor(Math.random() * 640),
-          yFace: Math.floor(Math.random() * 480)
+          yFace: Math.floor(Math.random() * 480),
+          life: 400;
         });
         sendSound( 3, 3 );
         Module._play_sound( 3, 3 );
@@ -150,7 +151,7 @@ function updateScreen(){
 
     for( let i = 0; i < me.rats.length; i++ ){
 
-      me.dam -= 0.05;
+      me.dam -= 0.10;
       $("#health").text( Math.round( me.dam ) );
 
       if( me.dam % 10 == 0 ){
