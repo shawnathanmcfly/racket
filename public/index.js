@@ -59,7 +59,7 @@ function sendHit(){
 
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st != 0)
+      hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st != 1)
         socket.emit( 'send_hit', { id:i, sid: socket.id, dam:6 });
 
   }
@@ -127,7 +127,7 @@ function updateScreen(){
         bullList[i].st
       );
 
-      if( distance <= 100 && bullList[i].id != socket.id && me.dam ){
+      if( distance <= 100 && bullList[i].id != socket.id && me.dam > 0 ){
         me.rats.push( {id: bullList[i].id,
           xFace: Math.floor(Math.random() * 640),
           yFace: Math.floor(Math.random() * 480),
