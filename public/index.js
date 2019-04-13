@@ -131,7 +131,7 @@ function updateScreen(){
         me.rats.push( {id: bullList[i].id,
           xFace: Math.floor(Math.random() * 640),
           yFace: Math.floor(Math.random() * 480),
-          life: 120
+          life: 200
         });
         sendSound( 3, 3 );
         Module._play_sound( 3, 3 );
@@ -311,9 +311,9 @@ $(
       Module._get_player_x(), Module._get_player_y(),
       sound.x, sound.y);
 
-    soundAdjust = 40 / soundAdjust * 277;
-    if( soundAdjust > 40 )
-      soundAdjust = 40
+    soundAdjust = 20 / soundAdjust * 177;
+    if( soundAdjust > 20 )
+      soundAdjust = 20
 
     Module._mix_volume( soundAdjust, sound.channel );
     Module._play_sound( sound.snd, sound.channel );
