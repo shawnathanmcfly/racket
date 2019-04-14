@@ -314,7 +314,7 @@ $(
   }),
 
   socket.on( 'send_rot', function(data){
-    pList[ data.id ] = data.data;
+    pList[ data.id ].r = data.data;
   }),
 
   socket.on( 'play_sound', function(sound){
