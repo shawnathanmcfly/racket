@@ -5,11 +5,11 @@
 var chatWindow = Vue.component( 'chat-window', {
   template:
     "<div>" +
-    "<label style='font-size:12px' for='f-main'>Chat</label>" +
-      "<div id='f-main' class='mt-1' style='overflow:auto;background-color:#232323; height:280px'>" +
+    "<label style='font-size:18px' for='f-main'>Chat</label>" +
+      "<div id='f-main' class='mt-1' style='padding:5px;font-size:16px;line-height:18px;overflow:auto;background-color:#232323; height:280px'>" +
       "</div>" +
-      "<label for='f-send-msg'>Send Message</label>" +
-      "<textarea id='f-send-msg' class='mt-1' style='border:none;height:80px; background-color:#232323; width:100%'></textarea>" +
+      "<label style='font-size:18px' for='f-send-msg'>Send Message</label>" +
+      "<textarea id='f-send-msg' class='mt-1' style='font-size:16px;line-height:18px;color:white;border:none;height:80px; background-color:#232323; width:100%'></textarea>" +
     "</div>"
 });
 
@@ -62,9 +62,16 @@ var controls = Vue.component( 'controls', {
         "<span><img src='https://img.webnots.com/2014/03/Pipe-and-Left-Slash.png' width='40' height='40'> = sound on</span><br>" +
         "<span><img src='https://img.webnots.com/2014/03/M1.png' width='40' height='40'> = capture / release mouse </span><br>" +
         "<span>MOUSE BUTTONS = shoot</span><br>" +
-
       "</div>"
 
+});
+
+var aboutWindow = Vue.component( 'about-window', {
+  template:
+    "<p><b>Racket</b> is an experimental online game using C, Web Assembly, " +
+     "Javascript and Emscripten. The goal is to demonstrate the fact " +
+     "the web browser is a reliable, cross platform option for realtime and resource hungry applications." +
+     "</p>"
 });
 
 var fGui = new Vue({
@@ -76,19 +83,18 @@ var fGui = new Vue({
       backgroundColor: "black",
       float: "left",
       width: "100%",
-      height: "480px",
+      height: "auto",
       color: "white",
       padding: "20px 20px 20px 20px",
       fontFamily: "'Anton', sans-serif",
       borderRadius: "8px 8px 8px 8px",
+      minHeight: "480px"
     }
   },
   components: {
     controls: controls
   }
 });
-
-
 
 var fNav = new Vue({
   el: "#f-nav",
@@ -97,17 +103,20 @@ var fNav = new Vue({
     styleDat: {
       backgroundColor: "black",
       width: "100%",
-      height: "480px",
+      height: "auto",
       color: "white",
       borderRadius: "8px 8px 8px 8px",
       fontFamily: "'Anton', sans-serif",
-      padding: "5px 15px 5px 15px",
-      wordSpacing: "6px"
+      padding: "15px 15px 15px 15px",
+      wordSpacing: "6px",
+      lineHeight: "35px",
+      minHeight: "480px"
     }
   },
   components: {
     chatWindow: chatWindow,
     loginWindow: loginWindow,
-    registerWindow: registerWindow
+    registerWindow: registerWindow,
+    aboutWindow:aboutWindow
   }
 });

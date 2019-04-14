@@ -341,11 +341,15 @@ $(
         pass: $("#pass").val(),
         old: me.name
       }, function( data ){
-        $("#error").val('');
+        $("#error").val(' ');
         if( !data ){
-          $("#sign-in").prepend("<p id='error'>You made an error somewhere</p>");
-        }else
+          $("#sign-in").prepend("<p style='color:red' id='error'>You made an error somewhere</p>");
+        }else{
+          $("#error").val('');
+          $("#sign-in").prepend("<p style='color:green' id='error'>Welcome back " + data.user + "!</p>");
+          socket.emit( 'msg_update', {name:me.name, msg:" logged in as " + data.user });
           me.name = data.user;
+        }
       })
       $("#user").val(''),
       $("#pass").val(''),
@@ -363,17 +367,21 @@ $(
           old: me.name
         }, function( data ){
 
-          $("#register").find('#error').remove();
+          $("#register").find('#error').val(" ");
 
           if( !data ){
-            $("#register").prepend("<p id='error'>That name is taken</p>");
+            $("#register").prepend("<p style='color:red' id='error'>That name is taken</p>");
 
-          }else
+          }else{
+
+            $("#register").prepend("<p style='color:green' id='error'>Welcome to RACKET " + data.user.user + "!</p>");
+            socket.emit( 'msg_update', {name:me.name, msg:" signed up as " + data.user.user + "! Wish them a warm welcome, with bullets!" });
             me.name = data.user.user;
+          }
         })
 
       }else
-        $("#register").prepend("<p id='error'>Passwords do no match</p>");
+        $("#register").append("<p style='color:red' id='error'>Passwords do no match</p>");
 
     $("#sign-user").val('');
     $("#sign-pass").val('');
