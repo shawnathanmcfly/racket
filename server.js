@@ -40,7 +40,7 @@ io.sockets.on('connection',(socket) => {
 
    //update all clients on players postion and rotation
    socket.on('player_coord', function(data){
-    
+
     socket.broadcast.emit('player_coord', { id:socket.id, data:data });
    });
 
@@ -67,6 +67,10 @@ io.sockets.on('connection',(socket) => {
 
    socket.on( 'update_position', function(data){
      socket.broadcast.emit( 'update_position', data );
+   });
+
+   socket.on( 'send_rot', function(data){
+     socket.broadcast.emit( 'send_rot', data );
    });
 
    socket.on('play_sound', function(data){

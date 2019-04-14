@@ -313,6 +313,10 @@ $(
     }
   }),
 
+  socket.on( 'send_rot', function(data){
+    pList[ data.id ] = data.data;
+  }),
+
   socket.on( 'play_sound', function(sound){
     let soundAdjust;
 
