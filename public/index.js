@@ -2,7 +2,7 @@ var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
 var bullList = [];
 var me = {};
 
-var BLOOD_SHOT = 2;
+var BLOOD_SHOT = 9;
 
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
@@ -21,14 +21,13 @@ function setRandomSpawn(){
   });
 
   me.dam = 100;
-  socket.emit( 'change_sprite', { st:0 } );
+  socket.emit( 'change_sprite', { st:1 } );
   $("#health").text( "" + 100 );
 
 }
 
 //If lc prop == 0, remove it from effects list
 function process_effects(){
-
   for( let i = 0; i < effectsList.length; i++ ){
     if( --effectsList[i].lc <= 0 ){
       effectsList.splice( i, 1 );
@@ -36,7 +35,7 @@ function process_effects(){
     }else{
 
       switch( effectsList[i].st ){
-        case 2:
+        case BLOOD_SHOT:
           effectsList[i].z += 12;
           break;
         default:
@@ -59,9 +58,8 @@ function sendHit(){
 
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
-      hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st != 1)
+      hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st )
         socket.emit( 'send_hit', { id:i, sid: socket.id, dam:6 });
-
   }
 }
 
@@ -73,7 +71,6 @@ function sendMsg(){
 }
 
 function updateScreen(){
-    //add distance to player from objects in server
 
     for( let i in pList ){
       pList[i].id = i; //wut
@@ -161,15 +158,14 @@ function updateScreen(){
       }
 
       if( me.dam <= 0 ){
-        socket.emit( 'change_sprite', { st:1 } );
+        socket.emit( 'change_sprite', { st:0 } );
         socket.emit( 'send_frag', { id: me.rats[i].id });
         Module._set_dead();
-        me.st = 1;
+        me.st = 0;
         sendSound( 1, 3 );
         me.rats = [];
         break;
       }
-
     }
 
     //Draw Sprites from furthest to closest.
@@ -222,7 +218,7 @@ $(
       rats: [],
       x: 0,
       y: 0,
-      st: 0,
+      st: 1,
       id: 0,
       name: ""
     }
@@ -236,15 +232,13 @@ $(
     socket.emit( 'update_position', { id:socket.id,
       x:Module._get_player_x(),
       y:Module._get_player_y(),
-      r:Module._get_player_r()
+      r:Module._get_player_r(),
     });
   }),
 
   socket.on( 'add_player', function(data){
-
     pList[ data.id ] = data;
     socket.emit( 'send_data_to_new_player', { id:socket.id, data:data });
-
   }),
 
   socket.on( 'send_data_to_new_player', function(data){
@@ -263,9 +257,9 @@ $(
       });
       if( me.dam <= 0 ){
 
-        socket.emit( 'change_sprite', { st:1 } );
+        socket.emit( 'change_sprite', { st:0 } );
         Module._set_dead();
-        me.st = 1;
+        me.st = 0;
         sendSound( 1, 3 );
         socket.emit( 'send_frag', { id: data.sid });
       }
@@ -277,7 +271,7 @@ $(
     if( data ){
       pList[ data.id ].x = data.x;
       pList[ data.id ].y = data.y;
-
+      pList[ data.id ].r = data.r;
     }
   }),
 
@@ -371,9 +365,7 @@ $(
 
           if( !data ){
             $("#register").prepend("<p style='color:red' id='error'>That name is taken</p>");
-
           }else{
-
             $("#register").prepend("<p style='color:green' id='error'>Welcome to RACKET " + data.user.user + "!</p>");
             socket.emit( 'msg_update', {name:me.name, msg:" signed up as " + data.user.user + "! Wish them a warm welcome, with bullets!" });
             me.name = data.user.user;

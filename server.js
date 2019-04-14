@@ -23,7 +23,7 @@ io.sockets.on('connection',(socket) => {
      data.rats = [];
      data.x = 0;
      data.y = 0;
-     data.st = 0;
+     data.st = 1;
      data.id = socket.id;
      data.name = stats.randomNewbName();
      socket.broadcast.emit( 'add_player', data);
@@ -40,6 +40,7 @@ io.sockets.on('connection',(socket) => {
 
    //update all clients on players postion and rotation
    socket.on('player_coord', function(data){
+    
     socket.broadcast.emit('player_coord', { id:socket.id, data:data });
    });
 
