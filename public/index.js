@@ -2,8 +2,6 @@ var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
 var bullList = [];
 var me = {};
 
-var BLOOD_SHOT = 9;
-
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
 }
@@ -152,7 +150,7 @@ function updateScreen(){
           x:Module._get_player_x() + (me.dam >> 1),
           y:Module._get_player_y() + (me.dam >> 1),
           z: -(200+me.dam),
-          st:BLOOD_SHOT,
+          st:9,
 
         });
       }
@@ -252,7 +250,7 @@ $(
         x:Module._get_player_x(),
         y:Module._get_player_y(),
         z: -100,
-        st:BLOOD_SHOT,
+        st:9,
 
       });
       if( me.dam <= 0 ){
