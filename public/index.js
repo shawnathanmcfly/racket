@@ -337,11 +337,11 @@ $(
         pass: $("#pass").val(),
         old: me.name
       }, function( data ){
-        $("#error").val(' ');
+        $("#error").remove();
         if( !data ){
           $("#sign-in").prepend("<p style='color:red' id='error'>You made an error somewhere</p>");
         }else{
-          $("#error").val('');
+
           $("#sign-in").prepend("<p style='color:green' id='error'>Welcome back " + data.user + "!</p>");
           socket.emit( 'msg_update', {name:me.name, msg:" logged in as " + data.user });
           me.name = data.user;
@@ -362,9 +362,8 @@ $(
           pass: $("#sign-pass").val(),
           old: me.name
         }, function( data ){
-
+          $("#error").remove();
           $("#register").find('#error').val(" ");
-
           if( !data ){
             $("#register").prepend("<p style='color:red' id='error'>That name is taken</p>");
           }else{
