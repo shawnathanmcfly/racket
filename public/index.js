@@ -33,7 +33,7 @@ function process_effects(){
     }else{
 
       switch( effectsList[i].st ){
-        case BLOOD_SHOT:
+        case 9:
           effectsList[i].z += 12;
           break;
         default:
