@@ -200,13 +200,14 @@ function updateScreen(){
     }
 
     if( ohShit != undefined ){
-      let i = 0;
+      let i = 0, splat = false;
       //do a pixel presiction check for a wall
       for( i = 0; i < 300; i++ )
         if( Module._wall_hit(
           Module._get_player_x() + Math.cos( ohShit.d ) * i,
           Module._get_player_x() + Math.sin( ohShit.d ) * i ) ){
             i -= 10;
+            splat = true;
             break;
         }
 
@@ -215,7 +216,7 @@ function updateScreen(){
       Module._set_player_x( me.x );
       Module._set_player_y( me.y );
       socket.emit( 'update_position', {id:socket.id, x:me.x, y:me.y, r:me.r});
-      if( Module._wall_hit( me.x, me.y ) ){
+      if( splat ){
         socket.emit( 'change_sprite', { st:0 } );
         socket.emit( 'send_frag', { id: ohShit.id });
         Module._set_dead();
