@@ -1,6 +1,5 @@
-var socket, pList = {}, hitList = {}, effectsList = [], spawnPoints = [];
-var bullList = [];
-var me = {};
+var socket, pList = {}, hitList = {}, effectsList = [],
+  spawnPoints = [], bullList = [], me = {};
 
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
@@ -305,6 +304,7 @@ $(
   }),
 
   socket.on( 'send_frag', function(data){
+    socket.emit( 'update_position', {id:socket.id , x:me.x, y:me.y, r:me.r});
     if( data.id === socket.id ){
       ++me.frags;
       $("#frags").text( me.frags );
