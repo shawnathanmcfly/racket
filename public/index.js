@@ -203,9 +203,11 @@ function updateScreen(){
       let i = 0;
       //do a pixel presiction check for a wall
       for( i = 0; i < 300; i++ )
-        if( Module._wall_hit( Math.cos( ohShit.d ), Math.sin( ohShit.d ) ) ){
-          i -= 10;
-          break;
+        if( Module._wall_hit(
+          Module._get_player_x() + Math.cos( ohShit.d ) * i,
+          Module._get_player_x() + Math.sin( ohShit.d ) * i ) ){
+            i -= 10;
+            break;
         }
 
       me.x = Module._get_player_x() + Math.cos( ohShit.d ) * i;
