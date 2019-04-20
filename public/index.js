@@ -200,9 +200,16 @@ function updateScreen(){
     }
 
     if( ohShit != undefined ){
+      let i = 0;
+      //do a pixel presiction check for a wall
+      for( i = 0; i < 300; i++ )
+        if( Module._wall_hit( Math.cos( ohShit.d ), Math.sin( ohShit.d ) ) ){
+          i -= 10;
+          break;
+        }
 
-      me.x = Module._get_player_x() + Math.cos( ohShit.d ) * 200;
-      me.y = Module._get_player_y() + Math.sin( ohShit.d ) * 200;
+      me.x = Module._get_player_x() + Math.cos( ohShit.d ) * i;
+      me.y = Module._get_player_y() + Math.sin( ohShit.d ) * i;
       Module._set_player_x( me.x );
       Module._set_player_y( me.y );
       socket.emit( 'update_position', {id:socket.id, x:me.x, y:me.y, r:me.r});
