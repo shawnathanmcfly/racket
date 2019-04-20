@@ -1,5 +1,5 @@
 var socket, pList = {}, hitList = {}, effectsList = [],
-  spawnPoints = [], bullList = [], me = {};
+  spawnPoints = [], bullList = [], me = {}, ohShit = undefined;
 
 function addSpawnPoint( x, y ){
   spawnPoints.push([x, y]);
@@ -10,7 +10,6 @@ function setRandomSpawn(){
   let t = spawnPoints[ Math.floor(Math.random() * (spawnPoints.length - 1)) ];
   Module._set_player_x( t[0] );
   Module._set_player_y( t[1] );
-
   socket.emit( 'update_position', {
     id:socket.id,
     x:t[0],
@@ -165,6 +164,8 @@ function updateScreen(){
       }
     }
 
+
+
     //Draw Sprites from furthest to closest.
     //(Avoid overlapping)
     for( let i = 0; i < mappedPlayers.length; i++ ){
@@ -197,6 +198,25 @@ function updateScreen(){
         w: Module._get_hit_w(t)
       }
     }
+
+    if( ohShit != undefined ){
+
+      me.x = Module._get_player_x() + Math.cos( ohShit.d ) * 200;
+      me.y = Module._get_player_y() + Math.sin( ohShit.d ) * 200;
+      Module._set_player_x( me.x );
+      Module._set_player_y( me.y );
+      socket.emit( 'update_position', {id:socket.id, x:me.x, y:me.y, r:me.r});
+      if( Module._wall_hit( me.x, me.y ) ){
+        socket.emit( 'change_sprite', { st:0 } );
+        socket.emit( 'send_frag', { id: ohShit.id });
+        Module._set_dead();
+        ohShit = undefined;
+        me.st = 0;
+        sendSound( 1, 3 );
+        me.rats = [];
+      }
+    }
+
     Module._process_gui();
 
     for( let i = 0; i < me.rats.length; i++ )
@@ -240,6 +260,14 @@ $(
 
   socket.on( 'send_data_to_new_player', function(data){
     pList[ data.id ] = data.data;
+  }),
+
+  socket.on( 'send_electro_hit', function(data){
+    console.log(data);
+    if( data.id === socket.id ){
+
+      ohShit = data;
+    }
   }),
 
   socket.on( 'send_hit', function(data){
@@ -304,8 +332,8 @@ $(
   }),
 
   socket.on( 'send_frag', function(data){
-    socket.emit( 'update_position', {id:socket.id , x:me.x, y:me.y, r:me.r});
     if( data.id === socket.id ){
+      socket.emit( 'update_position', {id:socket.id , x:me.x, y:me.y, r:me.r});
       ++me.frags;
       $("#frags").text( me.frags );
     }

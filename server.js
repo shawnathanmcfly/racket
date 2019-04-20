@@ -65,6 +65,11 @@ io.sockets.on('connection',(socket) => {
       socket.broadcast.emit( 'send_hit', data );
    });
 
+   socket.on('send_electro_hit', function(data){
+     console.log(data.d);
+     socket.broadcast.emit('send_electro_hit', data );
+   });
+
    socket.on( 'update_position', function(data){
      socket.broadcast.emit( 'update_position', data );
    });
