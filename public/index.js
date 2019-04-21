@@ -241,7 +241,7 @@ function updateScreen(){
         socket.emit( 'send_frag', { id: ohShit.sid });
 
         //lol
-        for( let ii = 0; ii < 3.14; ii += 0.3925 ){
+        for( let ii = 0; ii < 3.14; ii += 0.158 ){
           socket.emit( 'effects', {
             x:Module._get_player_x(),
             y:Module._get_player_y(),
@@ -249,7 +249,7 @@ function updateScreen(){
             ys:Math.sin( (ohShit.d - 1.57) + ii ) * 10,
             z: -150,
             st:9,
-            lc: 20
+            lc: 100
           });
         }
 
