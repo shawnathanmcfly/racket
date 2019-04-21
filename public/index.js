@@ -241,7 +241,7 @@ function updateScreen(){
         me.st = 0;
         sendSound( 1, 3 );
         rats = [];
-
+        sendSound(4, 3);
         socket.emit( 'effects', {
           x:Module._get_player_x(),
           y:Module._get_player_y(),
