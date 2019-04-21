@@ -318,7 +318,7 @@ $(
 
   //...OH SHIT
   socket.on( 'send_electro_hit', function(data){
-    if( data.id === socket.id && ohShit === undefined )
+    if( data.id === socket.id && ohShit == undefined )
       ohShit = data;
   }),
 
