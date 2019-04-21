@@ -245,8 +245,8 @@ function updateScreen(){
           socket.emit( 'effects', {
             x:Module._get_player_x(),
             y:Module._get_player_y(),
-            xs:Math.cos( (data.d - 1.57) + ii ) * 10,
-            ys:Math.sin( (data.d - 1.57) + ii ) * 10,
+            xs:Math.cos( (ohShit.d - 1.57) + ii ) * 10,
+            ys:Math.sin( (ohShit.d - 1.57) + ii ) * 10,
             z: -150,
             st:9,
             lc: 20
