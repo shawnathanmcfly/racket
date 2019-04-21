@@ -19,7 +19,6 @@ function setRandomSpawn(){
   me.dam = 100;
   socket.emit( 'change_sprite', { st:1 } );
   $("#health").text( "" + 100 );
-
 }
 
 //If lc prop == 0, remove it from effects list
@@ -50,8 +49,9 @@ function sendSound( snd, channel ){
   });
 }
 
+//Check if bitscanned weapon is aligned with other players in
+//screen.
 function sendHit(){
-
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
       hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st )
@@ -66,8 +66,16 @@ function sendMsg(){
   }
 }
 
+//*************************************
+//  JAVASCRIPT Portion of main Loop. Its called
+//  each frame from main_loop() in C code. See
+//  RACKET.C for details
+//  This is called from C to maintain a 60FPS
+//  Game GLOBALLY
+//
+//*************************************
 function updateScreen(){
-
+    //Get player data in game
     for( let i in pList ){
       pList[i].id = i; //wut
       pList[i].d = Module._get_dist(
@@ -76,6 +84,7 @@ function updateScreen(){
       );
     }
 
+    //Check for blood effects to be drawn
     process_effects();
 
     //sort effects drawing order by distance
@@ -133,6 +142,8 @@ function updateScreen(){
       }
     }
 
+    //loop through rats array and adjust health and
+    //remove if life span is reached
     for( let i = 0; i < me.rats.length; i++ ){
 
       me.dam -= 0.10;
@@ -148,8 +159,8 @@ function updateScreen(){
           x:Module._get_player_x() + (me.dam >> 1),
           y:Module._get_player_y() + (me.dam >> 1),
           z: -(200+me.dam),
-          st:9,
-
+          st: 9,
+          lc: 20
         });
       }
 
@@ -163,8 +174,6 @@ function updateScreen(){
         break;
       }
     }
-
-
 
     //Draw Sprites from furthest to closest.
     //(Avoid overlapping)
@@ -192,43 +201,70 @@ function updateScreen(){
         );
       }
 
-      //Add sprite position to hit detection list
+      //Add sprite position on GUI for hit detection
       hitList[ mappedPlayers[i].id ] = {
         x: Module._get_hit_x(t),
         w: Module._get_hit_w(t)
       }
     }
 
+    //When player is hit with electro gun, eject them
+    //relative to opp direct until wall contact
     if( ohShit != undefined ){
       let i = 0, splat = false;
-      //do a pixel presiction check for a wall
+      //do a pixel precision check for a wall
       for( i = 0; i < 300; i++ )
         if( Module._wall_hit(
           Module._get_player_x() + Math.cos( ohShit.d ) * i,
           Module._get_player_y() + Math.sin( ohShit.d ) * i ) ){
-            i -= 10;
+            i -= 20;
             splat = true;
             break;
         }
 
       me.x = Module._get_player_x() + Math.cos( ohShit.d ) * i;
       me.y = Module._get_player_y() + Math.sin( ohShit.d ) * i;
+      //...then set locally
       Module._set_player_x( me.x );
       Module._set_player_y( me.y );
-      socket.emit( 'update_position', {id:socket.id, x:me.x, y:me.y, r:me.r});
+      //Update player position GLOBALLY
+      socket.emit( 'update_position',
+        {id:socket.id, x:me.x, y:me.y, r:me.r});
+
+      //Set "Splattered against wall" state for
+      //player LOCALLY
       if( splat ){
-        socket.emit( 'change_sprite', { st:0 } );
+        socket.emit( 'change_sprite', { st:14 } );
         socket.emit( 'send_frag', { id: ohShit.id });
         Module._set_dead();
         ohShit = undefined;
         me.st = 0;
         sendSound( 1, 3 );
-        me.rats = [];
+        rats = [];
+
+        socket.emit( 'effects', {
+          x:Module._get_player_x(),
+          y:Module._get_player_y(),
+          z: -190,
+          st:13,
+          lc: 200
+        });
+
+        socket.emit( 'effects', {
+          x:Module._get_player_x(),
+          y:Module._get_player_y(),
+          z: -250,
+          st:12,
+          lc: 200
+        });
+
       }
     }
 
+    //C CALL - check for GUI effects and draw
     Module._process_gui();
 
+    //Got rats eating you? Draw them on your GUI
     for( let i = 0; i < me.rats.length; i++ )
       Module._draw_rat_on_face( me.rats[i].xFace, me.rats[i].yFace );
 
@@ -250,17 +286,21 @@ $(
       name: ""
     }
 
+    //Send new player data to be added to player list GLOBALLY
     socket.emit( 'add_player', me, function(data){
       me = data;
     });
   }),
 
+  //After respawn or inital game join, send data to all
+  //other players for proper drawing position
   socket.on( 'player_join', function(){
     socket.emit( 'update_position', { id:socket.id,
       x:Module._get_player_x(),
       y:Module._get_player_y(),
       r:Module._get_player_r(),
     });
+    socket.emit( 'msg_update', {name:me.name, msg:" joined the game!" });
   }),
 
   socket.on( 'add_player', function(data){
@@ -268,28 +308,31 @@ $(
     socket.emit( 'send_data_to_new_player', { id:socket.id, data:data });
   }),
 
+  //Sent out when player joins the game for correct
+  //position drawing in clients view
   socket.on( 'send_data_to_new_player', function(data){
     pList[ data.id ] = data.data;
   }),
 
+  //...OH SHIT
   socket.on( 'send_electro_hit', function(data){
-    console.log(data);
-    if( data.id === socket.id ){
-
+    if( data.id === socket.id )
       ohShit = data;
-    }
   }),
 
+  //For bit-scanned pistol hit detection
   socket.on( 'send_hit', function(data){
     if( data.id === socket.id && me.dam > 0 ){
       me.dam -= data.dam;
       socket.emit( 'effects', {
         x:Module._get_player_x(),
         y:Module._get_player_y(),
-        z: -100,
+        z: -150,
         st:9,
+        ls: 20
 
       });
+      //After a hit, check your health to see if yo' dead
       if( me.dam <= 0 ){
 
         socket.emit( 'change_sprite', { st:0 } );
@@ -310,14 +353,15 @@ $(
     }
   }),
 
+  //Add new effects and it's type to effects array for
+  //processing
   socket.on( 'effects', function(data){
-    data.lc = 8;
+    data.lc = data.st;
     data.d = Module._get_dist(
         Module._get_player_x(), Module._get_player_y(),
         data.x, data.y
-      ) - 10;
+      ) - 4;
     effectsList.push(data);
-
   }),
 
   socket.on( 'send_bullet', function(data){
@@ -341,6 +385,8 @@ $(
     pList[ data.id ].st = data.st;
   }),
 
+  //When player is killed by YOU, match id for
+  //client frag update
   socket.on( 'send_frag', function(data){
     if( data.id === socket.id ){
       socket.emit( 'update_position', {id:socket.id , x:me.x, y:me.y, r:me.r});
@@ -349,10 +395,15 @@ $(
     }
   }),
 
+  //Update GLOBALLY your direction of facing.
+  //So correct directional sprite is drawn
   socket.on( 'send_rot', function(data){
     pList[ data.id ].r = data.data;
   }),
 
+  //Play sound GLOBALLY. Check distance of source also
+  //Further away from sound source decreases dedicated
+  //channel
   socket.on( 'play_sound', function(sound){
     let soundAdjust;
 
@@ -362,7 +413,7 @@ $(
 
     soundAdjust = 20 / soundAdjust * 177;
     if( soundAdjust > 20 )
-      soundAdjust = 20
+      soundAdjust = 20;
 
     Module._mix_volume( soundAdjust, sound.channel );
     Module._play_sound( sound.snd, sound.channel );
