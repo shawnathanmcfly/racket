@@ -356,7 +356,6 @@ $(
   //Add new effects and it's type to effects array for
   //processing
   socket.on( 'effects', function(data){
-    data.lc = data.st;
     data.d = Module._get_dist(
         Module._get_player_x(), Module._get_player_y(),
         data.x, data.y
