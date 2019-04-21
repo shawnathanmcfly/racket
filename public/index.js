@@ -239,7 +239,6 @@ function updateScreen(){
         Module._set_dead();
         ohShit = undefined;
         me.st = 0;
-        sendSound( 1, 3 );
         rats = [];
         sendSound(4, 3);
         socket.emit( 'effects', {
