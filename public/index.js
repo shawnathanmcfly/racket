@@ -237,7 +237,7 @@ function updateScreen(){
       //Set "Splattered against wall" state for
       //player LOCALLY
       if( splat ){
-        socket.emit( 'change_sprite', { st:14 } );
+        socket.emit( 'change_sprite', { st:15 } );
         socket.emit( 'send_frag', { id: ohShit.sid });
 
         //lol
