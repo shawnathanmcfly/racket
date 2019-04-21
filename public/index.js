@@ -245,17 +245,17 @@ function updateScreen(){
         socket.emit( 'effects', {
           x:Module._get_player_x(),
           y:Module._get_player_y(),
-          z: -190,
+          z: -150,
           st:13,
-          lc: 200
+          lc: 4000
         });
 
         socket.emit( 'effects', {
           x:Module._get_player_x(),
           y:Module._get_player_y(),
-          z: -250,
+          z: -180,
           st:12,
-          lc: 200
+          lc: 4000
         });
 
       }
