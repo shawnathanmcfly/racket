@@ -240,18 +240,7 @@ function updateScreen(){
         socket.emit( 'change_sprite', { st:14 } );
         socket.emit( 'send_frag', { id: ohShit.sid });
 
-        //lol
-        for( let ii = 0; ii < 3.14; ii += 0.3925 ){
-          socket.emit( 'effects', {
-            x:Module._get_player_x(),
-            y:Module._get_player_y(),
-            xs:Math.cos( (data.d - 1.57) + ii ) * 10,
-            ys:Math.sin( (data.d - 1.57) + ii ) * 10,
-            z: -150,
-            st:9,
-            lc: 20
-          });
-        }
+      
 
 
         Module._set_dead();
