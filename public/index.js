@@ -241,21 +241,6 @@ function updateScreen(){
         me.st = 0;
         rats = [];
         sendSound(4, 3);
-        socket.emit( 'effects', {
-          x:Module._get_player_x(),
-          y:Module._get_player_y(),
-          z: -150,
-          st:13,
-          lc: 4000
-        });
-
-        socket.emit( 'effects', {
-          x:Module._get_player_x(),
-          y:Module._get_player_y(),
-          z: -180,
-          st:12,
-          lc: 4000
-        });
 
       }
     }
