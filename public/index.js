@@ -32,6 +32,8 @@ function process_effects(){
       switch( effectsList[i].st ){
         case 9:
           effectsList[i].z += 12;
+          effectsList[i].x += effectsList[i].xs;
+          effectsList[i].y += effectsList[i].ys;
           break;
         default:
           break;
@@ -55,7 +57,8 @@ function sendHit(){
   for( let i in hitList ){
     if( hitList[i].x < 640 / 2 &&
       hitList[i].x + hitList[i].w > 640 / 2 && pList[i].st )
-        socket.emit( 'send_hit', { id:i, sid: socket.id, dam:6 });
+        socket.emit( 'send_hit', { id:i, sid: socket.id,
+          dam:6, dir:Module._get_player_r() });
   }
 }
 
@@ -235,7 +238,22 @@ function updateScreen(){
       //player LOCALLY
       if( splat ){
         socket.emit( 'change_sprite', { st:14 } );
-        socket.emit( 'send_frag', { id: ohShit.id });
+        socket.emit( 'send_frag', { id: ohShit.sid });
+
+        //lol
+        for( let ii = 0; ii < 3.14; ii += 0.3925 ){
+          socket.emit( 'effects', {
+            x:Module._get_player_x(),
+            y:Module._get_player_y(),
+            xs:Math.cos( (data.d - 1.57) + ii ) * 10,
+            ys:Math.sin( (data.d - 1.57) + ii ) * 10,
+            z: -150,
+            st:9,
+            lc: 20
+          });
+        }
+
+
         Module._set_dead();
         ohShit = undefined;
         me.st = 0;
@@ -300,7 +318,7 @@ $(
 
   //...OH SHIT
   socket.on( 'send_electro_hit', function(data){
-    if( data.id === socket.id )
+    if( data.id === socket.id && me.health > 0 )
       ohShit = data;
   }),
 
@@ -311,10 +329,11 @@ $(
       socket.emit( 'effects', {
         x:Module._get_player_x(),
         y:Module._get_player_y(),
+        xs:Math.cos( data.d + 0.25 ) * 10,
+        ys:Math.sin( data.d + 0.25 ) * 10,
         z: -150,
         st:9,
-        ls: 20
-
+        lc: 20
       });
       //After a hit, check your health to see if yo' dead
       if( me.dam <= 0 ){
