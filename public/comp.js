@@ -6,10 +6,10 @@ var chatWindow = Vue.component( 'chat-window', {
   template:
     "<div>" +
     "<label style='font-size:18px' for='f-main'>Chat</label>" +
-      "<div id='f-main' class='mt-1' style='padding:5px;font-size:16px;line-height:18px;overflow:auto;background-color:#232323; height:280px'>" +
+      "<div id='f-main' class='m-0 mt-1' style='padding:5px;font-size:16px;line-height:18px;overflow:auto;background-color:#232323; height:280px'>" +
       "</div>" +
       "<label style='font-size:18px' for='f-send-msg'>Send Message</label>" +
-      "<textarea id='f-send-msg' class='mt-1' style='font-size:16px;line-height:18px;color:white;border:none;height:80px; background-color:#232323; width:100%'></textarea>" +
+      "<textarea id='f-send-msg' class='m-0 mt-1' style='font-size:16px;line-height:18px;color:white;border:none;height:80px; background-color:#232323; width:100%'></textarea>" +
     "</div>"
 });
 
@@ -50,26 +50,25 @@ var registerWindow = Vue.component( 'register-window', {
 var controls = Vue.component( 'controls', {
   template:
 
-      "<div style='background-color:#232323; padding:15px 15px 15px 15px; position:absolute; bottom:20px; width:80%'>" +
-        "<span><img src='https://img.webnots.com/2014/03/C1.png' width='40' height='40'> = message mode</span><br>" +
-        "<span>" +
+    "<div align='center'>" +
+        "<div style='width:70%;padding: 8px; text-align:center; background-color:rgb(35, 35, 35)'>" +
           "<img src='https://img.webnots.com/2014/03/W1.png' width='40' height='40'>" +
           "<img src='https://img.webnots.com/2014/03/S1.png' width='40' height='40'>" +
           "<img src='https://img.webnots.com/2014/03/A1.png' width='40' height='40'>" +
           "<img src='https://img.webnots.com/2014/03/D1.png' width='40' height='40'>" +
-          " = move" +
-        "</span><br>" +
-        "<span><img src='https://img.webnots.com/2014/03/Pipe-and-Left-Slash.png' width='40' height='40'> = sound on</span><br>" +
-        "<span><img src='https://img.webnots.com/2014/03/M1.png' width='40' height='40'> = capture / release mouse </span><br>" +
-        "<span>MOUSE BUTTONS = shoot</span><br>" +
-      "</div>"
+        "<br>move</div><br>" +
+        "<div style='width:70%;padding: 8px; text-align:center; background-color:rgb(35, 35, 35)'>" +
+        "<img src='https://img.webnots.com/2014/03/M1.png' width='40' height='40'><br>uncapture / capture mouse</div><br>" +
+        "<div style='width:70%;padding: 8px; text-align:center; background-color:rgb(35, 35, 35)'>" +
+        "<img src='https://img.webnots.com/2014/03/C1.png' width='40' height='40'><br>chat mode</div>" +
+    "</div>"
 
 });
 
 var aboutWindow = Vue.component( 'about-window', {
   template:
     "<p><b>Racket</b> is an experimental online game using C, Web Assembly, " +
-     "Javascript and Emscripten. The goal is to demonstrate the fact " +
+     "Javascript and Emscripten. The goal is to demonstrate " +
      "the web browser is a reliable, cross platform option for realtime and resource hungry applications." +
      "</p>"
 });
@@ -83,12 +82,14 @@ var fGui = new Vue({
       backgroundColor: "black",
       float: "left",
       width: "100%",
-      height: "auto",
+      height: "100%",
       color: "white",
       padding: "20px 20px 20px 20px",
       fontFamily: "'Anton', sans-serif",
       borderRadius: "8px 8px 8px 8px",
-      minHeight: "480px"
+      minHeight: "480px",
+      padding: "0px",
+      paddingTop: "8px"
     }
   },
   components: {
@@ -103,14 +104,15 @@ var fNav = new Vue({
     styleDat: {
       backgroundColor: "black",
       width: "100%",
-      height: "auto",
+      height: "100%",
       color: "white",
       borderRadius: "8px 8px 8px 8px",
       fontFamily: "'Anton', sans-serif",
       padding: "15px 15px 15px 15px",
       wordSpacing: "6px",
       lineHeight: "35px",
-      minHeight: "480px"
+      minHeight: "480px",
+      margin: "0px"
     }
   },
   components: {
