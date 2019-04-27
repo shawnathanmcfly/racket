@@ -10,6 +10,15 @@ Develope software that can run as fast as an app store / google play application
 Racket is hosted on a shared processing server. About 4 people can play at the same time with minimal lag. 
 Socket.IO used for networking.
 
+### Controls
+W S A D = Conventional First Person Shooter movement
+
+Arrow Keys = Classic Movement
+
+Mouse Button 1 / Spacebar = Fire
+
+C = chat mode ... then enter to send message
+
 ### See For Yourself
 [Click Here To See Demo](https://secret-bastion-20420.herokuapp.com/)
 
